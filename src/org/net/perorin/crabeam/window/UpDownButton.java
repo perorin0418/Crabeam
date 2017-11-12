@@ -31,7 +31,7 @@ public class UpDownButton extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				upBtnAction();
+				upBtnAction(e);
 			}
 		});
 
@@ -44,7 +44,7 @@ public class UpDownButton extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				downBtnAction();
+				downBtnAction(e);
 			}
 		});
 	}
@@ -65,12 +65,24 @@ public class UpDownButton extends JPanel {
 		downBtn.doClick();
 	}
 
-	public void upBtnAction() {
-		number++;
+	public void upBtnAction(ActionEvent e) {
+		if ((e.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK) {
+			number = number + 100;
+		} else if ((e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) {
+			number = number + 10;
+		} else {
+			number++;
+		}
 	}
 
-	public void downBtnAction() {
-		number--;
+	public void downBtnAction(ActionEvent e) {
+		if ((e.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK) {
+			number = number - 100;
+		} else if ((e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK) {
+			number = number - 10;
+		} else {
+			number--;
+		}
 		if (number < 0) {
 			number = 0;
 		}

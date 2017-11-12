@@ -8,6 +8,7 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -45,14 +46,14 @@ public class Logic {
 			UpDownButton udb = new UpDownButton() {
 
 				@Override
-				public void upBtnAction() {
-					super.upBtnAction();
+				public void upBtnAction(ActionEvent e) {
+					super.upBtnAction(e);
 					Logic.updateCurrentNo(formatTxt, upDownPnl, currentNoTxt);
 				}
 
 				@Override
-				public void downBtnAction() {
-					super.downBtnAction();
+				public void downBtnAction(ActionEvent e) {
+					super.downBtnAction(e);
 					Logic.updateCurrentNo(formatTxt, upDownPnl, currentNoTxt);
 				}
 			};
