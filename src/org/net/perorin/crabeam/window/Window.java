@@ -591,10 +591,12 @@ public class Window implements NativeKeyListener {
 							String ret = Logic.saveScreenshot(sc.getShortcut(), savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
 							Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
 							imgModel.addRow(obj);
+							break;
 						} else {
 							String ret = Logic.saveScreenshotActive(sc.getShortcut(), savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
 							Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
 							imgModel.addRow(obj);
+							break;
 						}
 					} else if (sc.getShortcut().contains("countUp")) {
 						Component[] comps = upDownPnl.getComponents();
