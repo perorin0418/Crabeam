@@ -9,6 +9,7 @@ public class Constant {
 	public static String PRESET_PATH = "./contents/preset/preset.csv";
 	public static String CAST_IMG_PATH = "./contents/image/cast/";
 	public static String CAST_FRAME_PATH = "./contents/image/cast/frame/frame.png";
+	public static String BOOTING_IMG_PATH = "./contents/image/booting/";
 	public static String ICON_PATH = "./contents/image/icon/icon64.png";
 	public static String BUTTON_PLUS = "./contents/image/button/plus.png";
 	public static String BUTTON_PLUS_P = "./contents/image/button/plus_p.png";

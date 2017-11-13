@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
-    <eviBtnVisible>false</eviBtnVisible>
+    <autoCountUp>true</autoCountUp>
+    <autoCountUpNo>1</autoCountUpNo>
     <format>%1-%1</format>
-    <givenExt>_1_given</givenExt>
+    <givenExt>_given</givenExt>
     <onTop>true</onTop>
     <saveFull>false</saveFull>
     <savePath>C:\Users\perorin\Desktop\Desktop\pleiades\workspace\Crabeam</savePath>
     <saveType>png</saveType>
-    <thenExt>_3_then</thenExt>
-    <whenExt>_2_when</whenExt>
-    <winSlctVisible>false</winSlctVisible>
+    <thenExt>_then</thenExt>
+    <whenExt>_when</whenExt>
 </config>

@@ -5,8 +5,6 @@ public class Config {
 	public final static String CONFIG_PATH = "./contents/config/config.xml";
 
 	private String format;
-	private boolean eviBtnVisible;
-	private boolean winSlctVisible;
 	private boolean onTop;
 	private boolean saveFull;
 	private String savePath;
@@ -14,17 +12,11 @@ public class Config {
 	private String givenExt;
 	private String whenExt;
 	private String thenExt;
+	private int autoCountUpNo;
+	private boolean autoCountUp;
 
 	public String getFormat() {
 		return format;
-	}
-
-	public boolean isEviBtnVisible() {
-		return eviBtnVisible;
-	}
-
-	public boolean isWinSlctVisible() {
-		return winSlctVisible;
 	}
 
 	public boolean isOnTop() {
@@ -55,16 +47,12 @@ public class Config {
 		return thenExt;
 	}
 
+	public boolean isAutoCountUp() {
+		return autoCountUp;
+	}
+
 	public void setFormat(String format) {
 		this.format = format;
-	}
-
-	public void setEviBtnVisible(boolean eviBtnVisible) {
-		this.eviBtnVisible = eviBtnVisible;
-	}
-
-	public void setWinSlctVisible(boolean winSlctVisible) {
-		this.winSlctVisible = winSlctVisible;
 	}
 
 	public void setOnTop(boolean onTop) {
@@ -93,6 +81,18 @@ public class Config {
 
 	public void setThenExt(String thenExt) {
 		this.thenExt = thenExt;
+	}
+
+	public void setAutoCountUp(boolean autoCountUp) {
+		this.autoCountUp = autoCountUp;
+	}
+
+	public int getAutoCountUpNo() {
+		return autoCountUpNo;
+	}
+
+	public void setAutoCountUpNo(int autoCountUpNo) {
+		this.autoCountUpNo = autoCountUpNo;
 	}
 
 }

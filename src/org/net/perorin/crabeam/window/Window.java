@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +39,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 import javax.xml.bind.JAXB;
 
 import org.jnativehook.GlobalScreen;
@@ -71,18 +72,15 @@ public class Window implements NativeKeyListener {
 	private JPanel schSlctPnl;
 	private JPanel schPnl;
 	private JPanel imgTblPnl;
-	private JPanel slctPnl;
+	private JPanel sctPnl;
 	private JPanel castPnl;
 	private JPanel txtPnl;
 	private JPanel btnPnl;
 	private JPanel optPnl;
 	private JPanel upDownPnl;
-	private JPanel schBtnPnl;
 	private JTextField formatTxt;
 	private JPanel optTab2;
 	private JTabbedPane tabbedPane;
-	private JCheckBox chkEviBtn;
-	private JCheckBox chkWinSlct;
 	private JCheckBox chkOnTop;
 	private JLabel extensionLbl;
 	private JLabel givenLbl;
@@ -101,7 +99,13 @@ public class Window implements NativeKeyListener {
 	private JTextField savePathTxt;
 	private JButton savePathBtn;
 	private JCheckBox chkSaveFull;
-	private boolean isSleep;
+	private String section = "given";
+	private RoundButton givenBtn;
+	private RoundButton whenBtn;
+	private RoundButton thenBtn;
+	private JTextField keyCodeViewer;
+	private JCheckBox chkAutoCountUp;
+	private JTextField countUpTxt;
 
 	public Window() {
 		initialize();
@@ -112,7 +116,7 @@ public class Window implements NativeKeyListener {
 		initUpDownButton();
 		initSchBtnPnl();
 		initSchPnl();
-		initSlctPnl();
+		initSctPnl();
 		initSchSlctPnl();
 		initImgTblPnl();
 		initOptPnl();
@@ -123,12 +127,15 @@ public class Window implements NativeKeyListener {
 	}
 
 	private void initialize() {
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException ex) {
 			ex.printStackTrace();
 		}
+
+		System.setProperty("file.encoding", "UTF-8");
 
 		meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class);
 		config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class);
@@ -177,15 +184,15 @@ public class Window implements NativeKeyListener {
 				}
 
 				config.setFormat(formatTxt.getText());
-				config.setEviBtnVisible(chkEviBtn.isSelected());
-				config.setWinSlctVisible(chkWinSlct.isSelected());
 				config.setOnTop(chkOnTop.isSelected());
 				config.setSaveFull(chkSaveFull.isSelected());
+				config.setAutoCountUp(chkAutoCountUp.isSelected());
 				config.setSaveType((String) extensionCmb.getSelectedItem());
 				config.setGivenExt(givenTxt.getText());
 				config.setWhenExt(whenTxt.getText());
 				config.setThenExt(thenTxt.getText());
 				config.setSavePath(savePathTxt.getText());
+				config.setAutoCountUpNo(Integer.parseInt(countUpTxt.getText()));
 				try {
 					JAXB.marshal(config, new FileOutputStream(Config.CONFIG_PATH));
 				} catch (FileNotFoundException e) {
@@ -218,7 +225,7 @@ public class Window implements NativeKeyListener {
 		castPnl.add(crabFrame);
 		crabFrame.setHorizontalAlignment(SwingConstants.CENTER);
 
-		JLabel crabImg = new JLabel(new ImageIcon(CastRandomizer.getCastImagePath()));
+		JLabel crabImg = new JLabel(new ImageIcon(ImageRandomizer.getCastImagePath()));
 		crabImg.setBounds(5, 0, 50, 50);
 		castPnl.add(crabImg);
 		crabImg.setHorizontalAlignment(SwingConstants.CENTER);
@@ -247,29 +254,6 @@ public class Window implements NativeKeyListener {
 	}
 
 	private void initSchBtnPnl() {
-		schBtnPnl = new JPanel();
-		schBtnPnl.setBackground(SystemColor.inactiveCaptionBorder);
-		schBtnPnl.setPreferredSize(new Dimension(110, 60));
-		schBtnPnl.setLayout(null);
-		btnPnl.add(schBtnPnl, BorderLayout.EAST);
-
-		RoundButton givenBtn = new RoundButton(new ImageIcon(Constant.BUTTON_GIVEN));
-		givenBtn.setBounds(3, 10, 33, 33);
-		schBtnPnl.add(givenBtn);
-		givenBtn.setPressedIcon(new ImageIcon(Constant.BUTTON_GIVEN_P));
-		givenBtn.setBackground(SystemColor.inactiveCaption);
-
-		RoundButton whenBtn = new RoundButton(new ImageIcon(Constant.BUTTON_WHEN));
-		whenBtn.setBounds(37, 9, 34, 34);
-		schBtnPnl.add(whenBtn);
-		whenBtn.setPressedIcon(new ImageIcon(Constant.BUTTON_WHEN_P));
-		whenBtn.setBackground(SystemColor.inactiveCaption);
-
-		RoundButton thenBtn = new RoundButton(new ImageIcon(Constant.BUTTON_THEN));
-		thenBtn.setBounds(72, 9, 34, 34);
-		schBtnPnl.add(thenBtn);
-		thenBtn.setPressedIcon(new ImageIcon(Constant.BUTTON_THEN_P));
-		thenBtn.setBackground(SystemColor.inactiveCaption);
 	}
 
 	private void initBtnPnl() {
@@ -288,23 +272,69 @@ public class Window implements NativeKeyListener {
 		schPnl.add(btnPnl, BorderLayout.EAST);
 	}
 
-	private void initSlctPnl() {
-		slctPnl = new JPanel();
-		Border b = slctPnl.getBorder();
+	private void initSctPnl() {
+		sctPnl = new JPanel();
+		Border b = sctPnl.getBorder();
 		EmptyBorder e = new EmptyBorder(0, 10, 0, 10);
-		slctPnl.setBorder(new CompoundBorder(b, e));
-		slctPnl.setBackground(SystemColor.inactiveCaptionBorder);
-		slctPnl.setLayout(new BorderLayout(0, 0));
+		sctPnl.setBorder(new CompoundBorder(b, e));
+		sctPnl.setBackground(SystemColor.inactiveCaptionBorder);
+		sctPnl.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
 
-		JComboBox<String> comboBox = new JComboBox<String>();
-		slctPnl.add(comboBox, BorderLayout.CENTER);
+		givenBtn = new RoundButton(new ImageIcon(Constant.BUTTON_GIVEN_P));
+		givenBtn.setBackground(SystemColor.inactiveCaption);
+		givenBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!"given".equals(section)) {
+					section = "given";
+					givenBtn.setIcon(new ImageIcon(Constant.BUTTON_GIVEN_P));
+					whenBtn.setIcon(new ImageIcon(Constant.BUTTON_WHEN));
+					thenBtn.setIcon(new ImageIcon(Constant.BUTTON_THEN));
+				}
+			}
+		});
+		;
+		sctPnl.add(givenBtn);
+
+		whenBtn = new RoundButton(new ImageIcon(Constant.BUTTON_WHEN));
+		whenBtn.setBackground(SystemColor.inactiveCaption);
+		whenBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!"when".equals(section)) {
+					section = "when";
+					givenBtn.setIcon(new ImageIcon(Constant.BUTTON_GIVEN));
+					whenBtn.setIcon(new ImageIcon(Constant.BUTTON_WHEN_P));
+					thenBtn.setIcon(new ImageIcon(Constant.BUTTON_THEN));
+				}
+			}
+		});
+		sctPnl.add(whenBtn);
+
+		thenBtn = new RoundButton(new ImageIcon(Constant.BUTTON_THEN));
+		thenBtn.setBackground(SystemColor.inactiveCaption);
+		thenBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!"then".equals(section)) {
+					section = "then";
+					givenBtn.setIcon(new ImageIcon(Constant.BUTTON_GIVEN));
+					whenBtn.setIcon(new ImageIcon(Constant.BUTTON_WHEN));
+					thenBtn.setIcon(new ImageIcon(Constant.BUTTON_THEN_P));
+				}
+			}
+		});
+		sctPnl.add(thenBtn);
 	}
 
 	private void initSchSlctPnl() {
 		schSlctPnl = new JPanel();
 		schSlctPnl.setLayout(new BorderLayout(0, 0));
 		schSlctPnl.add(schPnl, BorderLayout.NORTH);
-		schSlctPnl.add(slctPnl, BorderLayout.SOUTH);
+		schSlctPnl.add(sctPnl, BorderLayout.SOUTH);
 		frame.getContentPane().add(schSlctPnl, BorderLayout.NORTH);
 	}
 
@@ -360,7 +390,7 @@ public class Window implements NativeKeyListener {
 
 		JButton button = new JButton("適用");
 		button.setFont(new Font("メイリオ", Font.PLAIN, 12));
-		button.setBounds(236, 8, 57, 21);
+		button.setBounds(229, 9, 57, 21);
 		button.addActionListener(new ActionListener() {
 
 			@Override
@@ -424,40 +454,10 @@ public class Window implements NativeKeyListener {
 		tabbedPane.addTab("表示設定", null, optTab2, null);
 		optTab2.setLayout(null);
 
-		chkEviBtn = new JCheckBox("エビデンス取得ボタン表示");
-		chkEviBtn.setBounds(8, 6, 180, 20);
-		chkEviBtn.setFont(new Font("メイリオ", Font.PLAIN, 12));
-		chkEviBtn.setBackground(SystemColor.inactiveCaptionBorder);
-		chkEviBtn.setSelected(config.isEviBtnVisible());
-		schBtnPnl.setVisible(chkEviBtn.isSelected());
-		chkEviBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				schBtnPnl.setVisible(chkEviBtn.isSelected());
-			}
-		});
-		optTab2.add(chkEviBtn);
-
-		chkWinSlct = new JCheckBox("ウィンドウ選択表示");
-		chkWinSlct.setBackground(SystemColor.inactiveCaptionBorder);
-		chkWinSlct.setFont(new Font("メイリオ", Font.PLAIN, 12));
-		chkWinSlct.setBounds(8, 28, 180, 20);
-		chkWinSlct.setSelected(config.isWinSlctVisible());
-		slctPnl.setVisible(chkWinSlct.isSelected());
-		chkWinSlct.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				slctPnl.setVisible(chkWinSlct.isSelected());
-			}
-		});
-		optTab2.add(chkWinSlct);
-
 		chkOnTop = new JCheckBox("常に最前面表示");
 		chkOnTop.setBackground(SystemColor.inactiveCaptionBorder);
 		chkOnTop.setFont(new Font("メイリオ", Font.PLAIN, 12));
-		chkOnTop.setBounds(8, 50, 180, 20);
+		chkOnTop.setBounds(8, 6, 180, 20);
 		chkOnTop.setSelected(config.isOnTop());
 		frame.setAlwaysOnTop(chkOnTop.isSelected());
 		chkOnTop.addActionListener(new ActionListener() {
@@ -483,13 +483,13 @@ public class Window implements NativeKeyListener {
 		optTab3.add(savePathLbl);
 
 		savePathTxt = new JTextField();
-		savePathTxt.setBounds(59, 9, 218, 20);
+		savePathTxt.setBounds(59, 9, 164, 20);
 		savePathTxt.setText(config.getSavePath());
 		optTab3.add(savePathTxt);
 
 		savePathBtn = new JButton("...");
 		savePathBtn.setFont(new Font("メイリオ", Font.PLAIN, 12));
-		savePathBtn.setBounds(280, 9, 39, 21);
+		savePathBtn.setBounds(235, 9, 39, 21);
 		savePathBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -509,6 +509,83 @@ public class Window implements NativeKeyListener {
 		chkSaveFull.setBounds(8, 35, 103, 21);
 		chkSaveFull.setSelected(config.isSaveFull());
 		optTab3.add(chkSaveFull);
+
+		chkAutoCountUp = new JCheckBox("オートカウントアップ");
+		chkAutoCountUp.setBackground(SystemColor.inactiveCaptionBorder);
+		chkAutoCountUp.setFont(new Font("メイリオ", Font.PLAIN, 12));
+		chkAutoCountUp.setBounds(8, 58, 145, 21);
+		chkAutoCountUp.setSelected(config.isAutoCountUp());
+		chkAutoCountUp.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				countUpTxt.setEditable(chkAutoCountUp.isSelected());
+			}
+		});
+		optTab3.add(chkAutoCountUp);
+
+		countUpTxt = new JTextField();
+		countUpTxt.setBounds(161, 58, 45, 19);
+		countUpTxt.setDocument(new PlainDocument() {
+			int currentValue = 0;
+
+			public int getValue() {
+				return currentValue;
+			}
+
+			@Override
+			public void insertString(int offset, String str, AttributeSet attributes)
+					throws BadLocationException {
+				if (str == null) {
+					return;
+				} else {
+					String newValue;
+					int length = getLength();
+					if (length == 0) {
+						newValue = str;
+					} else {
+						String currentContent = getText(0, length);
+						StringBuffer currentBuffer = new StringBuffer(currentContent);
+						currentBuffer.insert(offset, str);
+						newValue = currentBuffer.toString();
+					}
+					currentValue = checkInput(newValue, offset);
+					super.insertString(offset, str, attributes);
+				}
+			}
+
+			@Override
+			public void remove(int offset, int length) throws BadLocationException {
+				int currentLength = getLength();
+				String currentContent = getText(0, currentLength);
+				String before = currentContent.substring(0, offset);
+				String after = currentContent.substring(length + offset, currentLength);
+				String newValue = before + after;
+				currentValue = checkInput(newValue, offset);
+				super.remove(offset, length);
+			}
+
+			private int checkInput(String proposedValue, int offset) throws BadLocationException {
+				if (proposedValue.length() > 0) {
+					try {
+						int newValue = Integer.parseInt(proposedValue);
+						return newValue;
+					} catch (NumberFormatException e) {
+						throw new BadLocationException(proposedValue, offset);
+					}
+				} else {
+					return 0;
+				}
+			}
+		});
+		countUpTxt.setText(String.valueOf(config.getAutoCountUpNo()));
+		countUpTxt.setEditable(chkAutoCountUp.isSelected());
+		optTab3.add(countUpTxt);
+
+		JLabel countUpLbl = new JLabel("番目のエビ№");
+		countUpLbl.setFont(new Font("メイリオ", Font.PLAIN, 12));
+		countUpLbl.setBounds(210, 62, 72, 13);
+		optTab3.add(countUpLbl);
 	}
 
 	private void initOptTab4() {
@@ -533,6 +610,12 @@ public class Window implements NativeKeyListener {
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		panel.setBackground(SystemColor.inactiveCaptionBorder);
+
+		keyCodeViewer = new JTextField();
+		keyCodeViewer.setEditable(false);
+		keyCodeViewer.setPreferredSize(new Dimension(200, 25));
+		panel.add(keyCodeViewer);
+
 		btnNewButton = new JButton("適用");
 		btnNewButton.setPreferredSize(new Dimension(60, 25));
 		btnNewButton.addActionListener(new ActionListener() {
@@ -543,8 +626,29 @@ public class Window implements NativeKeyListener {
 			}
 		});
 		panel.add(btnNewButton);
+
 		scList = Logic.loadShortcut(shortcutModel);
+
 		optTab4.add(panel, BorderLayout.SOUTH);
+	}
+
+	private void nextSection() {
+		if ("given".equals(section)) {
+			section = "when";
+			givenBtn.setIcon(new ImageIcon(Constant.BUTTON_GIVEN));
+			whenBtn.setIcon(new ImageIcon(Constant.BUTTON_WHEN_P));
+			thenBtn.setIcon(new ImageIcon(Constant.BUTTON_THEN));
+		} else if ("when".equals(section)) {
+			section = "then";
+			givenBtn.setIcon(new ImageIcon(Constant.BUTTON_GIVEN));
+			whenBtn.setIcon(new ImageIcon(Constant.BUTTON_WHEN));
+			thenBtn.setIcon(new ImageIcon(Constant.BUTTON_THEN_P));
+		} else if ("then".equals(section)) {
+			section = "given";
+			givenBtn.setIcon(new ImageIcon(Constant.BUTTON_GIVEN_P));
+			whenBtn.setIcon(new ImageIcon(Constant.BUTTON_WHEN));
+			thenBtn.setIcon(new ImageIcon(Constant.BUTTON_THEN));
+		}
 	}
 
 	private void suppressLogger() {
@@ -571,51 +675,47 @@ public class Window implements NativeKeyListener {
 
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent e) {
-		if (!isSleep) {
-			isSleep = true;
-			TimerTask task = new TimerTask() {
-
-				@Override
-				public void run() {
-					isSleep = false;
-				}
-
-			};
-			Timer timer = new Timer("sleep");
-			timer.schedule(task, 100L);
-			System.out.println("KeyCode => " + e.getKeyCode() + " , Modifiers => " + e.getModifiers());
-			for (Shortcut sc : scList) {
-				if (e.getKeyCode() == sc.getKeyCode() && e.getModifiers() == sc.getModifiers()) {
-					if (sc.getShortcut().contains("given") || sc.getShortcut().contains("when") || sc.getShortcut().contains("then")) {
-						if (chkSaveFull.isSelected()) {
-							String ret = Logic.saveScreenshot(sc.getShortcut(), savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
-							Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
-							imgModel.insertRow(0,obj);
-							break;
-						} else {
-							String ret = Logic.saveScreenshotActive(sc.getShortcut(), savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
-							Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
-							imgModel.insertRow(0,obj);
-							break;
-						}
-					} else if (sc.getShortcut().contains("countUp")) {
-						Component[] comps = upDownPnl.getComponents();
-						int upDownIndex = Integer.parseInt(String.valueOf(sc.getShortcut().charAt(0)));
-						((UpDownButton) comps[upDownIndex]).clickUp();
-					} else if (sc.getShortcut().contains("countDown")) {
-						Component[] comps = upDownPnl.getComponents();
-						int upDownIndex = Integer.parseInt(String.valueOf(sc.getShortcut().charAt(0)));
-						((UpDownButton) comps[upDownIndex]).clickDown();
-					}
-				}
-			}
-		} else {
-			System.out.println("キー入力は100ms置きにしか入力できません。");
-		}
 	}
 
 	@Override
 	public void nativeKeyReleased(NativeKeyEvent e) {
+		System.out.println("KeyCode => " + e.getKeyCode() + " , Modifiers => " + e.getModifiers());
+		keyCodeViewer.setText("KeyCode => " + e.getKeyCode() + " , Modifiers => " + e.getModifiers());
+		for (Shortcut sc : scList) {
+			if (e.getKeyCode() == sc.getKeyCode() && e.getModifiers() == sc.getModifiers()) {
+				if (sc.getShortcut().contains("screenshot")) {
+					if (chkSaveFull.isSelected()) {
+						String ret = Logic.saveScreenshot(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
+						Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
+						imgModel.insertRow(0, obj);
+						if (chkAutoCountUp.isSelected()) {
+							Component[] comps = upDownPnl.getComponents();
+							((UpDownButton) comps[Integer.parseInt(countUpTxt.getText())]).clickUp();
+						}
+						break;
+					} else {
+						String ret = Logic.saveScreenshotActive(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
+						Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
+						imgModel.insertRow(0, obj);
+						if (chkAutoCountUp.isSelected()) {
+							Component[] comps = upDownPnl.getComponents();
+							((UpDownButton) comps[Integer.parseInt(countUpTxt.getText())]).clickUp();
+						}
+						break;
+					}
+				} else if (sc.getShortcut().contains("countUp")) {
+					Component[] comps = upDownPnl.getComponents();
+					int upDownIndex = Integer.parseInt(String.valueOf(sc.getShortcut().charAt(0)));
+					((UpDownButton) comps[upDownIndex]).clickUp();
+				} else if (sc.getShortcut().contains("countDown")) {
+					Component[] comps = upDownPnl.getComponents();
+					int upDownIndex = Integer.parseInt(String.valueOf(sc.getShortcut().charAt(0)));
+					((UpDownButton) comps[upDownIndex]).clickDown();
+				} else if (sc.getShortcut().contains("nextSection")) {
+					nextSection();
+				}
+			}
+		}
 	}
 
 	@Override

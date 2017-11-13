@@ -5,11 +5,7 @@ import java.awt.Component;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.eclipse.swt.internal.win32.OS;
+import org.eclipse.swt.internal.win32.RECT;
 import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.table.ShortcutModel;
 import org.net.perorin.crabeam.window.UpDownButton;
@@ -76,58 +74,17 @@ public class Logic {
 		currentNoTxt.setText(String.format(formatStr, noArray));
 	}
 
-	public static String saveScreenshot(String scCode, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType) {
-		try {
-			Robot robot = new Robot();
-			robot.keyPress(KeyEvent.VK_PRINTSCREEN);
-			robot.delay(40);
-			robot.keyRelease(KeyEvent.VK_PRINTSCREEN);
-			robot.delay(40);
-			String ret = "";
-			for (int retry = 0; retry < 100; retry++) {
-				ret = saveSS(scCode, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType);
-				if (!"".equals(ret)) {
-					break;
-				} else {
-					Thread.sleep(100);
-				}
-			}
-			return ret;
-		} catch (AWTException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return "";
+	public static String saveScreenshot(String section, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType) {
+		RECT rect = new RECT();
+		OS.GetWindowRect(OS.GetDesktopWindow(), rect);
+		return saveSS(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType, rect);
 	}
 
-	public static String saveScreenshotActive(String scCode, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType) {
-		try {
-			Robot robot = new Robot();
-			robot.keyPress(KeyEvent.VK_ALT);
-			robot.delay(40);
-			robot.keyPress(KeyEvent.VK_PRINTSCREEN);
-			robot.delay(40);
-			robot.keyRelease(KeyEvent.VK_PRINTSCREEN);
-			robot.delay(40);
-			robot.keyRelease(KeyEvent.VK_ALT);
-			robot.delay(40);
-			String ret = "";
-			for (int retry = 0; retry < 100; retry++) {
-				ret = saveSS(scCode, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType);
-				if (!"".equals(ret)) {
-					break;
-				} else {
-					Thread.sleep(100);
-				}
-			}
-			return ret;
-		} catch (AWTException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return "";
+	public static String saveScreenshotActive(String section, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType) {
+		long hwnd = OS.GetForegroundWindow();
+		RECT rect = new RECT();
+		OS.GetWindowRect(hwnd, rect);
+		return saveSS(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType, rect);
 	}
 
 	public static void updateShortcut(JPanel upDownPnl, ShortcutModel shortcutModel) {
@@ -138,12 +95,10 @@ public class Logic {
 			if (row instanceof Vector) {
 				String shortcut = (String) (((Vector) row).elementAt(0));
 				String scCode = "";
-				if (shortcut.contains("前提条件エビ取得")) {
-					scCode = "前提条件エビ取得";
-				} else if (shortcut.contains("イベントエビ取得")) {
-					scCode = "イベントエビ取得";
-				} else if (shortcut.contains("処理結果エビ取得")) {
-					scCode = "処理結果エビ取得";
+				if (shortcut.contains("エビ取得")) {
+					scCode = "エビ取得";
+				} else if (shortcut.contains("次のセクション")) {
+					scCode = "次のセクション";
 				} else if (shortcut.contains("カウントアップ")) {
 					if (Integer.parseInt(String.valueOf(shortcut.charAt(1))) <= upDownPnl.getComponentCount()) {
 						scCode = shortcut;
@@ -185,12 +140,10 @@ public class Logic {
 			if (row instanceof Vector) {
 				String shortcut = (String) (((Vector) row).elementAt(0));
 				String scCode = "";
-				if (shortcut.contains("前提条件エビ取得")) {
-					scCode = "given";
-				} else if (shortcut.contains("イベントエビ取得")) {
-					scCode = "when";
-				} else if (shortcut.contains("処理結果エビ取得")) {
-					scCode = "then";
+				if (shortcut.contains("エビ取得")) {
+					scCode = "screenshot";
+				} else if (shortcut.contains("次のセクション")) {
+					scCode = "nextSection";
 				} else if (shortcut.contains("カウントアップ")) {
 					scCode = shortcut.charAt(1) + "_countUp";
 				} else if (shortcut.contains("カウントダウン")) {
@@ -208,6 +161,7 @@ public class Logic {
 	}
 
 	public static ShortcutModel loadShortcutPreset() {
+		System.setProperty("file.encoding", "UTF-8");
 		ShortcutModel model = new ShortcutModel();
 		try {
 			List<String[]> presets = Csv.load(new File(Constant.PRESET_PATH), new CsvConfig(), new StringArrayListHandler());
@@ -223,6 +177,7 @@ public class Logic {
 	}
 
 	public static void saveShortcutPreset(ShortcutModel model) {
+		System.setProperty("file.encoding", "UTF-8");
 		Vector rows = model.getDataVector();
 		List<String[]> list = new ArrayList<>();
 		for (Object row : rows) {
@@ -268,42 +223,39 @@ public class Logic {
 		return file;
 	}
 
-	private static String saveSS(String scCode, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType) {
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Clipboard clipboard = toolkit.getSystemClipboard();
-		BufferedImage img = null;
+	private static String saveSS(String section, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType, RECT rect) {
 		try {
-			img = (BufferedImage) clipboard.getData(DataFlavor.imageFlavor);
-		} catch (Exception e) {
-			System.out.println("Clipboard connect waiting");
-			return "";
-		}
-		if (img != null) {
-			try {
-				StringBuilder fileName = new StringBuilder();
-				fileName.append(savePathTxt.getText() + "\\");
-				fileName.append(currentNoTxt.getText());
-				if ("given".equals(scCode)) {
-					fileName.append(givenTxt.getText());
-				} else if ("when".equals(scCode)) {
-					fileName.append(whenTxt.getText());
-				} else if ("then".equals(scCode)) {
-					fileName.append(thenTxt.getText());
+			Robot robot = new Robot();
+			BufferedImage img = robot.createScreenCapture(new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top));
+			if (img != null) {
+				try {
+					StringBuilder fileName = new StringBuilder();
+					fileName.append(savePathTxt.getText() + "\\");
+					fileName.append(currentNoTxt.getText());
+					if ("given".equals(section)) {
+						fileName.append(givenTxt.getText());
+					} else if ("when".equals(section)) {
+						fileName.append(whenTxt.getText());
+					} else if ("then".equals(section)) {
+						fileName.append(thenTxt.getText());
+					}
+					if ("png".equals(saveType)) {
+						fileName.append(".png");
+					} else if ("jpg".equals(saveType)) {
+						fileName.append(".jpg");
+					} else if ("bmp".equals(saveType)) {
+						fileName.append(".bmp");
+					}
+					File f = new File(fileName.toString());
+					ImageIO.write(img, saveType, f);
+					System.out.println("save:" + f.getPath());
+					return f.getPath();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				if ("png".equals(saveType)) {
-					fileName.append(".png");
-				} else if ("jpg".equals(saveType)) {
-					fileName.append(".jpg");
-				} else if ("bmp".equals(saveType)) {
-					fileName.append(".bmp");
-				}
-				File f = new File(fileName.toString());
-				ImageIO.write(img, saveType, f);
-				System.out.println("save:" + f.getPath());
-				return f.getPath();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+		} catch (AWTException e1) {
+			e1.printStackTrace();
 		}
 		return "";
 	}
