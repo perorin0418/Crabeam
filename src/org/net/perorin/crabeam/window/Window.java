@@ -706,11 +706,11 @@ public class Window implements NativeKeyListener {
 				} else if (sc.getShortcut().contains("countUp")) {
 					Component[] comps = upDownPnl.getComponents();
 					int upDownIndex = Integer.parseInt(String.valueOf(sc.getShortcut().charAt(0)));
-					((UpDownButton) comps[upDownIndex]).clickUp();
+					((UpDownButton) comps[upDownIndex - 1]).clickUp();
 				} else if (sc.getShortcut().contains("countDown")) {
 					Component[] comps = upDownPnl.getComponents();
 					int upDownIndex = Integer.parseInt(String.valueOf(sc.getShortcut().charAt(0)));
-					((UpDownButton) comps[upDownIndex]).clickDown();
+					((UpDownButton) comps[upDownIndex - 1]).clickDown();
 				} else if (sc.getShortcut().contains("nextSection")) {
 					nextSection();
 				}

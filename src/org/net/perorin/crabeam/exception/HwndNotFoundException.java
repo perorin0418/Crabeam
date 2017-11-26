@@ -6,7 +6,7 @@ public class HwndNotFoundException extends Exception {
 		super();
 	}
 
-	public HwndNotFoundException(String message){
+	public HwndNotFoundException(String message) {
 		super(message);
 	}
 }

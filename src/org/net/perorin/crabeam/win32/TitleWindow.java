@@ -12,7 +12,7 @@ public class TitleWindow {
 
 	public TitleWindow(String title) throws HwndNotFoundException {
 		titleName = title;
-		hwnd = (int) OS.FindWindow(null, new TCHAR(OS.CP_INSTALLED, titleName, true));
+		hwnd = OS.FindWindow(null, new TCHAR(OS.CP_INSTALLED, titleName, true));
 
 		if (hwnd == 0) {
 			throw new HwndNotFoundException("指定したタイトル[" + title + "]のハンドルが見つかりません");

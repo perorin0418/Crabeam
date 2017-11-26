@@ -57,6 +57,10 @@ public class UpDownButton extends JPanel {
 		return String.format("%0" + nod + "d", number);
 	}
 
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
 	public void clickUp() {
 		upBtn.doClick();
 	}

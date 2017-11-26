@@ -2,7 +2,7 @@
 <config>
     <autoCountUp>true</autoCountUp>
     <autoCountUpNo>1</autoCountUpNo>
-    <format>%1-%1</format>
+    <format>%1-%1-%1</format>
     <givenExt>_given</givenExt>
     <onTop>true</onTop>
     <saveFull>false</saveFull>
