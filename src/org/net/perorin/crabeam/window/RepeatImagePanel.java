@@ -13,10 +13,10 @@ public class RepeatImagePanel extends JLayeredPane {
 
 	private BufferedImage backgroundImage;
 
-	public RepeatImagePanel(File image) {
+	public RepeatImagePanel(String image) {
 		super();
 		try {
-			backgroundImage = ImageIO.read(image);
+			backgroundImage = ImageIO.read(new File(image));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

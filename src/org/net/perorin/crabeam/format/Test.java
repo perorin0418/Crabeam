@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class Test {
 
 	public static void main(String[] args) {
-		test2();
+		FormatLoader f = new FormatLoader("./contents/format/sample.xlsx", "./contents/format/test.xml");
 	}
 
 	private static void test1() {

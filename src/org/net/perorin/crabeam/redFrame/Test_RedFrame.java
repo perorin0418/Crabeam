@@ -1,15 +1,25 @@
 package org.net.perorin.crabeam.redFrame;
 
-import java.awt.Cursor;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class Test_RedFrame {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args)  {
 
-		Thread.sleep(10000);
+		Queue<String> que = new ArrayDeque<String>(0);
+		que.offer("1");
+		que.offer("2");
+		que.offer("3");
+		que.offer("4");
+		que.offer("5");
+		System.out.println(que);
 
-		Cursor c = Cursor.getDefaultCursor();
-		System.out.println(c.getType());
+		que.poll();
+		que.offer("6");
+		System.out.println(que);
+
+
 	}
 
 }
