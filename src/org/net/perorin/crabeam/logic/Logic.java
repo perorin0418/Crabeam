@@ -3,6 +3,8 @@ package org.net.perorin.crabeam.logic;
 import java.awt.AWTException;
 import java.awt.Component;
 import java.awt.HeadlessException;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
@@ -26,6 +28,8 @@ import javax.swing.JTextField;
 import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.internal.win32.RECT;
 import org.net.perorin.crabeam.config.Constant;
+import org.net.perorin.crabeam.cv.CV;
+import org.net.perorin.crabeam.cv.CVImage;
 import org.net.perorin.crabeam.table.ShortcutModel;
 import org.net.perorin.crabeam.window.UpDownButton;
 
@@ -74,17 +78,32 @@ public class Logic {
 		currentNoTxt.setText(String.format(formatStr, noArray));
 	}
 
-	public static String saveScreenshot(String section, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType) {
+	public static String saveScreenshot(
+			String section,
+			JTextField savePathTxt,
+			JTextField currentNoTxt,
+			JTextField givenTxt,
+			JTextField whenTxt,
+			JTextField thenTxt,
+			String saveType,
+			String cursorType) {
 		RECT rect = new RECT();
 		OS.GetWindowRect(OS.GetDesktopWindow(), rect);
-		return saveSS(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType, rect);
+		return saveSS(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType, rect, cursorType);
 	}
 
-	public static String saveScreenshotActive(String section, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType) {
-		long hwnd = OS.GetForegroundWindow();
+	public static String saveScreenshotActive(
+			String section,
+			JTextField savePathTxt,
+			JTextField currentNoTxt,
+			JTextField givenTxt,
+			JTextField whenTxt,
+			JTextField thenTxt,
+			String saveType,
+			String cursorType) {
 		RECT rect = new RECT();
-		OS.GetWindowRect(hwnd, rect);
-		return saveSS(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType, rect);
+		OS.GetWindowRect(OS.GetForegroundWindow(), rect);
+		return saveSS(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, saveType, rect, cursorType);
 	}
 
 	public static void updateShortcut(JPanel upDownPnl, ShortcutModel shortcutModel) {
@@ -223,12 +242,77 @@ public class Logic {
 		return file;
 	}
 
-	private static String saveSS(String section, JTextField savePathTxt, JTextField currentNoTxt, JTextField givenTxt, JTextField whenTxt, JTextField thenTxt, String saveType, RECT rect) {
+	private static String saveSS(
+			String section,
+			JTextField savePathTxt,
+			JTextField currentNoTxt,
+			JTextField givenTxt,
+			JTextField whenTxt,
+			JTextField thenTxt,
+			String saveType,
+			RECT rect,
+			String cursorType) {
 		try {
 			Robot robot = new Robot();
 			BufferedImage img = robot.createScreenCapture(new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top));
 			if (img != null) {
 				try {
+					if ("無し".equals(cursorType)) {
+						// NOP
+					} else {
+						CVImage img1 = new CVImage(img);
+						CVImage img2 = new CVImage(Constant.CURSOR_DEFAULT);
+						Point point = MouseInfo.getPointerInfo().getLocation();
+						point.x = point.x - rect.left;
+						point.y = point.y - rect.top;
+						switch (cursorType) {
+						case "デフォルト":
+							img2 = new CVImage(Constant.CURSOR_DEFAULT);
+							break;
+
+						case "指":
+							img2 = new CVImage(Constant.CURSOR_HAND);
+							break;
+
+						case "砂時計":
+							img2 = new CVImage(Constant.CURSOR_BUSY);
+							break;
+
+						case "移動":
+							img2 = new CVImage(Constant.CURSOR_MOVE);
+							break;
+
+						case "上下拡縮":
+							img2 = new CVImage(Constant.CURSOR_EXPAND_VERTICAL);
+							break;
+
+						case "左右拡縮":
+							img2 = new CVImage(Constant.CURSOR_EXPAND_HORIZONTAL);
+							break;
+
+						case "右斜拡縮":
+							img2 = new CVImage(Constant.CURSOR_EXPAND_VER_HOR);
+							break;
+
+						case "左斜拡縮":
+							img2 = new CVImage(Constant.CURSOR_EXPAND_HOR_VER);
+							break;
+
+						case "キャレット":
+							img2 = new CVImage(Constant.CURSOR_BEAM);
+							break;
+
+						case "十字":
+							img2 = new CVImage(Constant.CURSOR_CROSS);
+							break;
+
+						default:
+							break;
+						}
+						img1 = CV.merge(img1, img2, point);
+						img = img1.getImageBuffer();
+					}
+
 					StringBuilder fileName = new StringBuilder();
 					fileName.append(savePathTxt.getText() + "\\");
 					fileName.append(currentNoTxt.getText());

@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
-    <autoCountUp>true</autoCountUp>
-    <autoCountUpNo>1</autoCountUpNo>
-    <format>%1-%1-%1</format>
-    <givenExt>_given</givenExt>
-    <onTop>true</onTop>
-    <saveFull>false</saveFull>
-    <savePath>C:\Users\perorin\Desktop\Desktop\pleiades\workspace\Crabeam</savePath>
-    <saveType>png</saveType>
-    <thenExt>_then</thenExt>
-    <whenExt>_when</whenExt>
+    <crabeam>
+        <auto_count_up>false</auto_count_up>
+        <auto_count_up_no>0</auto_count_up_no>
+        <format>%1-%1-%1</format>
+        <given_ext>_Given</given_ext>
+        <on_top>true</on_top>
+        <save_full>false</save_full>
+        <save_path>C:\Users\perorin\Desktop</save_path>
+        <save_type>png</save_type>
+        <then_ext>_Then</then_ext>
+        <when_ext>_When</when_ext>
+    </crabeam>
+    <crablaser>
+        <on_top>false</on_top>
+        <save_full>false</save_full>
+    </crablaser>
 </config>

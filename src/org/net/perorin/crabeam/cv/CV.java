@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
@@ -24,6 +25,27 @@ public class CV {
 	public static final double POINT_SIZE = 4 / 3;
 	public static final int MODE_SIMILAR_SIZE = 1;
 	public static final int MODE_CENTER = 2;
+
+	public static CVImage merge(CVImage img1, CVImage img2, Point point) {
+		WritableRaster wr1 = img1.getImageRaster();
+		WritableRaster wr2 = img2.getImageRaster();
+
+		int pixel[] = new int[4];
+		for (int x = 0; x < img2.getWidth(); x++) {
+			for (int y = 0; y < img2.getHeight(); y++) {
+				wr2.getPixel(x, y, pixel);
+				if (pixel[3] != 0) {
+					int draw_x = point.x + x;
+					int draw_y = point.y + y;
+					if (draw_x > 0 && draw_x < img1.getWidth() &&
+							draw_y > 0 && draw_y < img1.getHeight()) {
+						wr1.setPixel(draw_x, draw_y, pixel);
+					}
+				}
+			}
+		}
+		return img1;
+	}
 
 	/***
 	 * list内のCVImageをすべて統合して一つのCVImageにする<br>
@@ -147,7 +169,7 @@ public class CV {
 
 	/**
 	 * 画像に文字列を描画する
-	 * @param img
+	 * @param fusenImg
 	 * @param strs
 	 * @param x 開始位置
 	 * @param y 開始位置

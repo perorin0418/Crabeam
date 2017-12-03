@@ -17,19 +17,20 @@ import javax.swing.table.TableColumn;
 import javax.xml.bind.JAXB;
 
 import org.net.perorin.crabeam.config.Meta;
+import org.net.perorin.crabeam.config.MetaCrabeam;
 import org.net.perorin.crabeam.font.NicoFont;
 
 public class ImageTable extends JTable {
 
 	public ImageTable(ImageModel model) {
 		super(model);
-		Meta meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class);
+		MetaCrabeam meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class).getCrabeam();
 		this.setRowSelectionAllowed(true);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.setAutoResizeMode(AUTO_RESIZE_OFF);
 		if (meta != null) {
-			this.getColumn(ImageModel.COLUMN_HEADER[0]).setPreferredWidth(meta.getNoWidth());
-			this.getColumn(ImageModel.COLUMN_HEADER[1]).setPreferredWidth(meta.getSsWidth());
+			this.getColumn(ImageModel.COLUMN_HEADER[0]).setPreferredWidth(meta.getNo_width());
+			this.getColumn(ImageModel.COLUMN_HEADER[1]).setPreferredWidth(meta.getSs_width());
 		} else {
 			this.getColumn(ImageModel.COLUMN_HEADER[0]).setPreferredWidth(40);
 			this.getColumn(ImageModel.COLUMN_HEADER[1]).setPreferredWidth(200);

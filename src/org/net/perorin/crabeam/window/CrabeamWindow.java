@@ -49,8 +49,10 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.net.perorin.crabeam.config.Config;
+import org.net.perorin.crabeam.config.ConfigCrabeam;
 import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.config.Meta;
+import org.net.perorin.crabeam.config.MetaCrabeam;
 import org.net.perorin.crabeam.font.NicoFont;
 import org.net.perorin.crabeam.logic.Logic;
 import org.net.perorin.crabeam.logic.Shortcut;
@@ -63,8 +65,8 @@ public class CrabeamWindow implements NativeKeyListener {
 
 	private List<Shortcut> scList;
 
-	private Meta meta;
-	private Config config;
+	private MetaCrabeam meta;
+	private ConfigCrabeam config;
 	private JFrame frame;
 	private ImageModel imgModel;
 	private ImageTable imgTable;
@@ -107,6 +109,8 @@ public class CrabeamWindow implements NativeKeyListener {
 	private JCheckBox chkAutoCountUp;
 	private JTextField countUpTxt;
 
+	private JComboBox<String> cmbMouseCursor;
+
 	public CrabeamWindow() {
 		initialize();
 		initFrame();
@@ -137,8 +141,8 @@ public class CrabeamWindow implements NativeKeyListener {
 
 		System.setProperty("file.encoding", "UTF-8");
 
-		meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class);
-		config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class);
+		meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class).getCrabeam();
+		config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrabeam();
 
 		if (!GlobalScreen.isNativeHookRegistered()) {
 			try {
@@ -157,7 +161,7 @@ public class CrabeamWindow implements NativeKeyListener {
 		frame = new JFrame();
 		frame.setTitle("蟹光線");
 		if (meta != null) {
-			frame.setBounds(meta.getFrameX(), meta.getFrameY(), meta.getFrameWidth(), meta.getFrameHeight());
+			frame.setBounds(meta.getFrame_x(), meta.getFrame_y(), meta.getFrame_width(), meta.getFrame_height());
 		} else {
 			frame.setBounds(100, 100, 360, 280);
 		}
@@ -171,30 +175,34 @@ public class CrabeamWindow implements NativeKeyListener {
 			}
 
 			private void frameClosing() {
-				meta.setFrameX(frame.getX());
-				meta.setFrameY(frame.getY());
-				meta.setFrameWidth(frame.getWidth());
-				meta.setFrameHeight(frame.getHeight());
-				meta.setNoWidth(imgTable.getNoWidth());
-				meta.setSsWidth(imgTable.getSsWidth());
+				meta.setFrame_x(frame.getX());
+				meta.setFrame_y(frame.getY());
+				meta.setFrame_width(frame.getWidth());
+				meta.setFrame_height(frame.getHeight());
+				meta.setNo_width(imgTable.getNoWidth());
+				meta.setSs_width(imgTable.getSsWidth());
 				try {
-					JAXB.marshal(meta, new FileOutputStream(Meta.META_PATH));
+					Meta buf_meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class);
+					buf_meta.setCrabeam(meta);
+					JAXB.marshal(buf_meta, new FileOutputStream(Meta.META_PATH));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
 
 				config.setFormat(formatTxt.getText());
-				config.setOnTop(chkOnTop.isSelected());
-				config.setSaveFull(chkSaveFull.isSelected());
-				config.setAutoCountUp(chkAutoCountUp.isSelected());
-				config.setSaveType((String) extensionCmb.getSelectedItem());
-				config.setGivenExt(givenTxt.getText());
-				config.setWhenExt(whenTxt.getText());
-				config.setThenExt(thenTxt.getText());
-				config.setSavePath(savePathTxt.getText());
-				config.setAutoCountUpNo(Integer.parseInt(countUpTxt.getText()));
+				config.setOn_top(chkOnTop.isSelected());
+				config.setSave_full(chkSaveFull.isSelected());
+				config.setAuto_count_up(chkAutoCountUp.isSelected());
+				config.setSave_type((String) extensionCmb.getSelectedItem());
+				config.setGiven_ext(givenTxt.getText());
+				config.setWhen_ext(whenTxt.getText());
+				config.setThen_ext(thenTxt.getText());
+				config.setSave_path(savePathTxt.getText());
+				config.setAuto_count_up_no(Integer.parseInt(countUpTxt.getText()));
 				try {
-					JAXB.marshal(config, new FileOutputStream(Config.CONFIG_PATH));
+					Config buf_config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class);
+					buf_config.setCrabeam(config);
+					JAXB.marshal(buf_config, new FileOutputStream(Config.CONFIG_PATH));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -413,7 +421,7 @@ public class CrabeamWindow implements NativeKeyListener {
 		extensionCmb.addItem("png");
 		extensionCmb.addItem("jpg");
 		extensionCmb.addItem("bmp");
-		extensionCmb.setSelectedItem(config.getSaveType());
+		extensionCmb.setSelectedItem(config.getSave_type());
 		optTab1.add(extensionCmb);
 
 		givenLbl = new JLabel("Given付加文字");
@@ -423,7 +431,7 @@ public class CrabeamWindow implements NativeKeyListener {
 
 		givenTxt = new JTextField();
 		givenTxt.setBounds(111, 58, 117, 19);
-		givenTxt.setText(config.getGivenExt());
+		givenTxt.setText(config.getGiven_ext());
 		optTab1.add(givenTxt);
 
 		whenLbl = new JLabel("When付加文字");
@@ -433,7 +441,7 @@ public class CrabeamWindow implements NativeKeyListener {
 
 		whenTxt = new JTextField();
 		whenTxt.setBounds(111, 81, 117, 19);
-		whenTxt.setText(config.getWhenExt());
+		whenTxt.setText(config.getWhen_ext());
 		optTab1.add(whenTxt);
 
 		thenLbl = new JLabel("Then付加文字");
@@ -443,7 +451,7 @@ public class CrabeamWindow implements NativeKeyListener {
 
 		thenTxt = new JTextField();
 		thenTxt.setBounds(111, 104, 117, 19);
-		thenTxt.setText(config.getThenExt());
+		thenTxt.setText(config.getThen_ext());
 		optTab1.add(thenTxt);
 
 	}
@@ -458,7 +466,7 @@ public class CrabeamWindow implements NativeKeyListener {
 		chkOnTop.setBackground(SystemColor.inactiveCaptionBorder);
 		chkOnTop.setFont(new Font("メイリオ", Font.PLAIN, 12));
 		chkOnTop.setBounds(8, 6, 180, 20);
-		chkOnTop.setSelected(config.isOnTop());
+		chkOnTop.setSelected(config.isOn_top());
 		frame.setAlwaysOnTop(chkOnTop.isSelected());
 		chkOnTop.addActionListener(new ActionListener() {
 
@@ -484,7 +492,7 @@ public class CrabeamWindow implements NativeKeyListener {
 
 		savePathTxt = new JTextField();
 		savePathTxt.setBounds(59, 9, 164, 20);
-		savePathTxt.setText(config.getSavePath());
+		savePathTxt.setText(config.getSave_path());
 		optTab3.add(savePathTxt);
 
 		savePathBtn = new JButton("...");
@@ -507,14 +515,14 @@ public class CrabeamWindow implements NativeKeyListener {
 		chkSaveFull.setBackground(SystemColor.inactiveCaptionBorder);
 		chkSaveFull.setFont(new Font("メイリオ", Font.PLAIN, 12));
 		chkSaveFull.setBounds(8, 35, 103, 21);
-		chkSaveFull.setSelected(config.isSaveFull());
+		chkSaveFull.setSelected(config.isSave_full());
 		optTab3.add(chkSaveFull);
 
 		chkAutoCountUp = new JCheckBox("オートカウントアップ");
 		chkAutoCountUp.setBackground(SystemColor.inactiveCaptionBorder);
 		chkAutoCountUp.setFont(new Font("メイリオ", Font.PLAIN, 12));
 		chkAutoCountUp.setBounds(8, 58, 145, 21);
-		chkAutoCountUp.setSelected(config.isAutoCountUp());
+		chkAutoCountUp.setSelected(config.isAuto_count_up());
 		chkAutoCountUp.addActionListener(new ActionListener() {
 
 			@Override
@@ -578,7 +586,7 @@ public class CrabeamWindow implements NativeKeyListener {
 				}
 			}
 		});
-		countUpTxt.setText(String.valueOf(config.getAutoCountUpNo()));
+		countUpTxt.setText(String.valueOf(config.getAuto_count_up_no()));
 		countUpTxt.setEditable(chkAutoCountUp.isSelected());
 		optTab3.add(countUpTxt);
 
@@ -586,6 +594,26 @@ public class CrabeamWindow implements NativeKeyListener {
 		countUpLbl.setFont(new Font("メイリオ", Font.PLAIN, 12));
 		countUpLbl.setBounds(210, 62, 72, 13);
 		optTab3.add(countUpLbl);
+
+		JLabel lblMouseCursor = new JLabel("マウスカーソル");
+		lblMouseCursor.setFont(new Font("メイリオ", Font.PLAIN, 12));
+		lblMouseCursor.setBounds(12, 85, 84, 13);
+		optTab3.add(lblMouseCursor);
+
+		cmbMouseCursor = new JComboBox<String>();
+		cmbMouseCursor.setBounds(108, 81, 115, 19);
+		cmbMouseCursor.addItem("無し");
+		cmbMouseCursor.addItem("デフォルト");
+		cmbMouseCursor.addItem("指");
+		cmbMouseCursor.addItem("砂時計");
+		cmbMouseCursor.addItem("移動");
+		cmbMouseCursor.addItem("上下拡縮");
+		cmbMouseCursor.addItem("左右拡縮");
+		cmbMouseCursor.addItem("右斜拡縮");
+		cmbMouseCursor.addItem("左斜拡縮");
+		cmbMouseCursor.addItem("キャレット");
+		cmbMouseCursor.addItem("十字");
+		optTab3.add(cmbMouseCursor);
 	}
 
 	private void initOptTab4() {
@@ -685,7 +713,15 @@ public class CrabeamWindow implements NativeKeyListener {
 			if (e.getKeyCode() == sc.getKeyCode() && e.getModifiers() == sc.getModifiers()) {
 				if (sc.getShortcut().contains("screenshot")) {
 					if (chkSaveFull.isSelected()) {
-						String ret = Logic.saveScreenshot(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
+						String ret = Logic.saveScreenshot(
+								section,
+								savePathTxt,
+								currentNoTxt,
+								givenTxt,
+								whenTxt,
+								thenTxt,
+								(String) extensionCmb.getSelectedItem(),
+								(String) cmbMouseCursor.getSelectedItem());
 						Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
 						imgModel.insertRow(0, obj);
 						if (chkAutoCountUp.isSelected()) {
@@ -694,7 +730,15 @@ public class CrabeamWindow implements NativeKeyListener {
 						}
 						break;
 					} else {
-						String ret = Logic.saveScreenshotActive(section, savePathTxt, currentNoTxt, givenTxt, whenTxt, thenTxt, (String) extensionCmb.getSelectedItem());
+						String ret = Logic.saveScreenshotActive(
+								section,
+								savePathTxt,
+								currentNoTxt,
+								givenTxt,
+								whenTxt,
+								thenTxt,
+								(String) extensionCmb.getSelectedItem(),
+								(String) cmbMouseCursor.getSelectedItem());
 						Object[] obj = { imgModel.getRowCount() + 1, new File(ret).getName() };
 						imgModel.insertRow(0, obj);
 						if (chkAutoCountUp.isSelected()) {
