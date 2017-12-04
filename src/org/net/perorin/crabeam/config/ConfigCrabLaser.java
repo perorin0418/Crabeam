@@ -6,6 +6,7 @@ public class ConfigCrabLaser {
 	private boolean save_full;
 	private String save_path;
 	private String save_type;
+	private int split_location;
 	private String given_ext;
 	private String when_ext;
 	private String then_ext;
@@ -64,6 +65,14 @@ public class ConfigCrabLaser {
 
 	public void setThen_ext(String then_ext) {
 		this.then_ext = then_ext;
+	}
+
+	public int getSplit_location() {
+		return split_location;
+	}
+
+	public void setSplit_location(int split_location) {
+		this.split_location = split_location;
 	}
 
 }

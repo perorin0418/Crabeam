@@ -15,5 +15,6 @@
     <crablaser>
         <on_top>false</on_top>
         <save_full>false</save_full>
+        <split_location>100</split_location>
     </crablaser>
 </config>

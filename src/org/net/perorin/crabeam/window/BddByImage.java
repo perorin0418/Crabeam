@@ -13,9 +13,11 @@ import javax.swing.JTextArea;
 import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.cv.CV;
 import org.net.perorin.crabeam.cv.CVImage;
+import org.net.perorin.crabeam.logic.CacheManeger;
 
 public class BddByImage extends JLayeredPane {
 
+	private String bdd;
 	private CVImage fusenImg;
 	private JLabel fusenLbl;
 	private CVImage selectImg;
@@ -28,8 +30,24 @@ public class BddByImage extends JLayeredPane {
 	private final int TEXTAREA_LAYER = 1;
 	private final int SELECT_LAYER = 2;
 
-	public BddByImage(String img) {
-		this.fusenImg = new CVImage(img);
+	public BddByImage(String bdd) {
+		this.bdd = bdd;
+		switch (bdd) {
+		case "Given":
+			this.fusenImg = new CVImage(Constant.TESTSUITE_GIVEN_PATH);
+			break;
+
+		case "When":
+			this.fusenImg = new CVImage(Constant.TESTSUITE_WHEN_PATH);
+			break;
+
+		case "Then":
+			this.fusenImg = new CVImage(Constant.TESTSUITE_THEN_PATH);
+			break;
+
+		default:
+			break;
+		}
 
 		fusenLbl = new JLabel();
 		this.add(fusenLbl);
@@ -73,11 +91,23 @@ public class BddByImage extends JLayeredPane {
 		textArea.setBounds(20, 20, width - 40, height);
 
 		fusenLbl.setBounds(0, 0, width, height);
-		fusenImg = CV.resize(fusenImg, width, height);
+		CVImage cache_fusen = CacheManeger.uncacheImage(bdd + width + height);
+		if (cache_fusen != null) {
+			fusenImg = cache_fusen;
+		} else {
+			fusenImg = CV.resize(fusenImg, width, height);
+			CacheManeger.cacheImage(bdd + width + height, fusenImg);
+		}
 		fusenLbl.setIcon(new ImageIcon(fusenImg.getImageBuffer()));
 
 		selectLbl.setBounds(20, 20, width - 40, height - 40);
-		selectImg = CV.resize(selectImg, width - 40, height);
+		CVImage cache_select = CacheManeger.uncacheImage("select" + width + height);
+		if (cache_select != null) {
+			selectImg = cache_select;
+		} else {
+			selectImg = CV.resize(selectImg, width - 40, height);
+			CacheManeger.cacheImage("select" + width + height, selectImg);
+		}
 		selectLbl.setIcon(new ImageIcon(selectImg.getImageBuffer()));
 	}
 

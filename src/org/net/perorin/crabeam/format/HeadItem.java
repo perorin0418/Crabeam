@@ -5,6 +5,8 @@ public class HeadItem {
 	private String name;
 	private boolean require;
 	private int address;
+	private int order;
+	private String type;
 
 	public String getName() {
 		return name;
@@ -28,6 +30,22 @@ public class HeadItem {
 
 	public void setAddress(int address) {
 		this.address = address;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

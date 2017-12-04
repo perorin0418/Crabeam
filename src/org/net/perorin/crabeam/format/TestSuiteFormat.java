@@ -95,4 +95,13 @@ public class TestSuiteFormat {
 		this.format_name = format_name;
 	}
 
+	public HeadItem getHeadItemByOrder(int order) {
+		for (HeadItem hi : head_item_list) {
+			if (hi.getOrder() == order) {
+				return hi;
+			}
+		}
+		return null;
+	}
+
 }

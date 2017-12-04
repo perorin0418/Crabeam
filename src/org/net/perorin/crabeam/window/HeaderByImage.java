@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.cv.CV;
 import org.net.perorin.crabeam.cv.CVImage;
+import org.net.perorin.crabeam.logic.CacheManeger;
 
 public class HeaderByImage extends JPanel {
 
@@ -41,7 +42,13 @@ public class HeaderByImage extends JPanel {
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
 		imgLbl.setBounds(0, 0, width, height);
-		img = CV.resize(img, width, height);
+		CVImage cache = CacheManeger.uncacheImage("header" + width + height);
+		if (cache != null) {
+			img = cache;
+		} else {
+			img = CV.resize(img, width, height);
+			CacheManeger.cacheImage("header" + width + height, img);
+		}
 		imgLbl.setIcon(new ImageIcon(img.getImageBuffer()));
 		txtLbl.setBounds(10, 10, width - img.getWidth() / 5, height - 20);
 	}

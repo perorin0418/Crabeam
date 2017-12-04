@@ -39,22 +39,24 @@ import org.net.perorin.crabeam.config.ConfigCrabLaser;
 import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.config.Meta;
 import org.net.perorin.crabeam.config.MetaCrabLaser;
+import org.net.perorin.crabeam.poi.FormatLoader;
 
 public class CrabLaserWindow implements NativeKeyListener {
 
 	private ConfigCrabLaser config;
 	private MetaCrabLaser meta;
+	private FormatLoader testData;
 
 	private JFrame frame;
 	private JSplitPane splitPane;
 	private RepeatImagePanel testSuitePanel;
 	private int currentNo = 0;
 
-	public CrabLaserWindow(String excelFile) {
-		initialize();
+	public CrabLaserWindow(String excel, String format) {
+		initialize(excel, format);
 	}
 
-	private void initialize() {
+	private void initialize(String excel, String format) {
 
 		Toolkit.getDefaultToolkit().setDynamicLayout(false);
 
@@ -65,6 +67,7 @@ public class CrabLaserWindow implements NativeKeyListener {
 			ex.printStackTrace();
 		}
 
+		testData = new FormatLoader(excel, format);
 		meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class).getCrablaser();
 		config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrablaser();
 
@@ -108,7 +111,6 @@ public class CrabLaserWindow implements NativeKeyListener {
 				meta.setFrame_y(frame.getY());
 				meta.setFrame_width(frame.getWidth());
 				meta.setFrame_height(frame.getHeight());
-				meta.setSplit_location(splitPane.getDividerLocation());
 				try {
 					Meta buf_meta = JAXB.unmarshal(new File(Meta.META_PATH), Meta.class);
 					buf_meta.setCrablaser(meta);
@@ -122,12 +124,9 @@ public class CrabLaserWindow implements NativeKeyListener {
 
 	private void initSplitPanel() {
 		splitPane = new JSplitPane();
+		splitPane.setEnabled(false);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		if (meta != null) {
-			splitPane.setDividerLocation(meta.getSplit_location());
-		} else {
-			splitPane.setDividerLocation(400);
-		}
+		splitPane.setDividerLocation(frame.getHeight() - config.getSplit_location());
 		splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent pce) {
@@ -138,10 +137,10 @@ public class CrabLaserWindow implements NativeKeyListener {
 	}
 
 	private void initTestSuitePanel() {
-		testSuitePanel = new RepeatImagePanel(Constant.TESTSUITE_BACKGROUND_PATH);
-		splitPane.setLeftComponent(testSuitePanel);
+				testSuitePanel = new RepeatImagePanel(Constant.TESTSUITE_BACKGROUND_PATH);
+				splitPane.setLeftComponent(testSuitePanel);
 
-		reloadBouds();
+				reloadBouds();
 	}
 
 	private void initPicturePanel() {
@@ -149,7 +148,7 @@ public class CrabLaserWindow implements NativeKeyListener {
 		splitPane.setRightComponent(scrollPane);
 
 		JPanel picturePanel = new JPanel();
-		picturePanel.setBackground(SystemColor.info);
+		picturePanel.setBackground(SystemColor.inactiveCaptionBorder);
 		picturePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		scrollPane.setViewportView(picturePanel);
 
@@ -158,7 +157,7 @@ public class CrabLaserWindow implements NativeKeyListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (currentNo < 10) {
+				if (currentNo < testData.size() - 1) {
 					currentNo++;
 					reloadBouds();
 				}
@@ -188,34 +187,27 @@ public class CrabLaserWindow implements NativeKeyListener {
 	}
 
 	private void reloadBouds() {
+
+		// SplitPaneの更新
+		splitPane.setDividerLocation(frame.getHeight() - config.getSplit_location());
+
+		// テストスウィートの更新
 		testSuitePanel.removeAll();
-		for (int i = currentNo - 1; i < currentNo + 2; i++) {
-			if (0 <= i && i <= 10) {
-
-				System.out.println("loading");
-
-				TestSuitePanel buf = test(i);
-				testSuitePanel.add(buf);
-				testSuitePanel.setLayer(buf, 0);
-				buf.setBounds(
-						(frame.getWidth() / 2) * (i - currentNo) - 29 * (i - currentNo),
-						0,
-						frame.getWidth(),
-						splitPane.getDividerLocation());
-				buf.setScrollEnable(i == currentNo);
-				buf.setVisible(currentNo - 2 < i && i < currentNo + 2);
-			}
-		}
-	}
-
-	private TestSuitePanel test(int i) {
 		TestSuitePanel tsp = new TestSuitePanel();
-		tsp.setHeadText(i + "-" + i + "-" + i);
-		tsp.setGivenText("" + i);
-		tsp.setWhenText("" + i);
-		tsp.setThenText("" + i);
+		tsp.setHeadText(testData.getHeader(currentNo));
+		tsp.setGivenText(testData.getGiven(currentNo));
+		tsp.setWhenText(testData.getWhen(currentNo));
+		tsp.setThenText(testData.getThen(currentNo));
 		tsp.setPicture("./contents/screenshot.png");
-		return tsp;
+		testSuitePanel.add(tsp);
+		testSuitePanel.setLayer(tsp, 0);
+		tsp.setBounds(
+				0,
+				0,
+				frame.getWidth(),
+				splitPane.getDividerLocation());
+		tsp.setScrollEnable(true);
+		tsp.setVisible(true);
 	}
 
 	private void suppressLogger() {

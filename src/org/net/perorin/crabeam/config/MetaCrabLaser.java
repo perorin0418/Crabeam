@@ -6,7 +6,6 @@ public class MetaCrabLaser {
 	private int frame_width = 0;
 	private int frame_x = 0;
 	private int frame_y = 0;
-	private int split_location = 0;
 
 	public int getFrame_height() {
 		return frame_height;
@@ -39,13 +38,4 @@ public class MetaCrabLaser {
 	public void setFrame_y(int frame_y) {
 		this.frame_y = frame_y;
 	}
-
-	public int getSplit_location() {
-		return split_location;
-	}
-
-	public void setSplit_location(int split_location) {
-		this.split_location = split_location;
-	}
-
 }

@@ -42,9 +42,9 @@ public class TestSuitePanel extends JPanel {
 		scroll.getViewport().setOpaque(false);
 
 		header = new HeaderByImage();
-		given = new BddByImage(Constant.TESTSUITE_GIVEN_PATH);
-		when = new BddByImage(Constant.TESTSUITE_WHEN_PATH);
-		then = new BddByImage(Constant.TESTSUITE_THEN_PATH);
+		given = new BddByImage("Given");
+		when = new BddByImage("When");
+		then = new BddByImage("Then");
 
 		labelSuite.add(header);
 		labelSuite.add(given);
@@ -52,11 +52,11 @@ public class TestSuitePanel extends JPanel {
 		labelSuite.add(then);
 
 		JLabel castFrame = new JLabel(new ImageIcon(Constant.CAST_WAPPEN_PATH));
-		castFrame.setBounds(40, 10, 50, 50);
+		castFrame.setBounds(20, 10, 50, 50);
 		labelSuite.add(castFrame);
 
 		JLabel castImg = new JLabel(new ImageIcon(ImageRandomizer.getCastImagePath()));
-		castImg.setBounds(40, 10, 50, 50);
+		castImg.setBounds(20, 10, 50, 50);
 		labelSuite.add(castImg);
 
 		picture = new PictureCanvas();
@@ -68,25 +68,25 @@ public class TestSuitePanel extends JPanel {
 		super.setBounds(x, y, width, height);
 		scroll.setBounds(x, y, width, height);
 
-		header.setBounds(100, 10, width - 160, 50);
+		header.setBounds(80, 10, width - 120, 50);
 
-		given.setBounds(20, 70, width - 60);
+		given.setBounds(10, 70, width - 40);
 		int height_given = given.getPreferredHeight();
 
-		when.setBounds(20, 80 + height_given, width - 60);
+		when.setBounds(10, 80 + height_given, width - 40);
 		int height_when = when.getPreferredHeight();
 
-		then.setBounds(20, 90 + height_given + height_when, width - 60);
+		then.setBounds(10, 90 + height_given + height_when, width - 40);
 		int height_then = then.getPreferredHeight();
 
-		picture.setBounds(20, 100 + height_given + height_when + height_then, width - 60);
+		picture.setBounds(10, 100 + height_given + height_when + height_then, width - 40);
 		int height_picture = picture.getPreferredHeight();
 
 		labelSuite.setBounds(0, 0, width, 110 + height_given + height_when + height_then + height_picture);
 		labelSuite.setPreferredSize(new Dimension(width, 110 + height_given + height_when + height_then + height_picture));
 	}
 
-	public void setHeadText(String text){
+	public void setHeadText(String text) {
 		header.setText(text);
 	}
 
@@ -102,7 +102,7 @@ public class TestSuitePanel extends JPanel {
 		then.setText(text);
 	}
 
-	public void setPicture(String imgPath){
+	public void setPicture(String imgPath) {
 		picture.setPicture(imgPath);
 	}
 

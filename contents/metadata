@@ -9,10 +9,9 @@
         <ss_width>182</ss_width>
     </crabeam>
     <crablaser>
-        <frame_height>700</frame_height>
-        <frame_width>324</frame_width>
-        <frame_x>1258</frame_x>
-        <frame_y>208</frame_y>
-        <split_location>406</split_location>
+        <frame_height>561</frame_height>
+        <frame_width>461</frame_width>
+        <frame_x>3056</frame_x>
+        <frame_y>38</frame_y>
     </crablaser>
 </meta>
