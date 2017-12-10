@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <meta>
     <crabeam>
-        <frame_height>625</frame_height>
-        <frame_width>341</frame_width>
-        <frame_x>1218</frame_x>
-        <frame_y>167</frame_y>
-        <no_width>52</no_width>
-        <ss_width>182</ss_width>
+        <frame_height>458</frame_height>
+        <frame_width>249</frame_width>
+        <frame_x>1463</frame_x>
+        <frame_y>212</frame_y>
+        <no_width>47</no_width>
+        <ss_width>139</ss_width>
     </crabeam>
     <crablaser>
-        <frame_height>561</frame_height>
-        <frame_width>461</frame_width>
-        <frame_x>3056</frame_x>
-        <frame_y>38</frame_y>
+        <frame_height>858</frame_height>
+        <frame_width>478</frame_width>
+        <frame_x>3182</frame_x>
+        <frame_y>-975</frame_y>
     </crablaser>
 </meta>

@@ -44,4 +44,15 @@ public class Constant {
 	public static String CURSOR_EXPAND_HOR_VER = "./contents/image/cursor/expand_hv.png";
 	public static String CURSOR_BEAM = "./contents/image/cursor/beam.png";
 	public static String CURSOR_CROSS = "./contents/image/cursor/cross.png";
+	public static String BUTTON_CONFIG = "./contents/image/button/config.png";
+	public static String BUTTON_CONFIG_P = "./contents/image/button/config_p.png";
+	public static String BUTTON_PREV = "./contents/image/button/prev.png";
+	public static String BUTTON_PREV_P = "./contents/image/button/prev_p.png";
+	public static String BUTTON_NEXT = "./contents/image/button/next.png";
+	public static String BUTTON_NEXT_P = "./contents/image/button/next_p.png";
+	public static String BUTTON_STAR = "./contents/image/button/star.png";
+	public static String BUTTON_STAR_P = "./contents/image/button/star_p.png";
+	public static String BUTTON_MENU = "./contents/image/button/menu.png";
+	public static String BUTTON_MENU_P = "./contents/image/button/menu_p.png";
+	public static String LOADING_GIF = "./contents/image/label/loading.gif";
 }

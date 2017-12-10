@@ -61,6 +61,8 @@ public class CVImage {
 		try {
 			dos = new DataOutputStream(new FileOutputStream(filename));
 			ImageIO.write(this.img, "png", dos);
+			dos.close();
+			dos = null;
 			return true;
 
 		} catch (FileNotFoundException e) {

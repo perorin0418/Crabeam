@@ -100,19 +100,23 @@ public class BddByImage extends JLayeredPane {
 		}
 		fusenLbl.setIcon(new ImageIcon(fusenImg.getImageBuffer()));
 
-		selectLbl.setBounds(20, 20, width - 40, height - 40);
-		CVImage cache_select = CacheManeger.uncacheImage("select" + width + height);
+		selectLbl.setBounds(30, 5, width - 60, height - 10);
+		CVImage cache_select = CacheManeger.uncacheImage("select" + (width - 60) + (height - 10));
 		if (cache_select != null) {
 			selectImg = cache_select;
 		} else {
-			selectImg = CV.resize(selectImg, width - 40, height);
-			CacheManeger.cacheImage("select" + width + height, selectImg);
+			selectImg = CV.resize(selectImg, width - 60, height - 10);
+			CacheManeger.cacheImage("select" + (width - 60) + (height - 10), selectImg);
 		}
 		selectLbl.setIcon(new ImageIcon(selectImg.getImageBuffer()));
 	}
 
 	public int getPreferredHeight() {
 		return height;
+	}
+
+	public boolean isSelect() {
+		return isSelect;
 	}
 
 	public void select() {
@@ -127,6 +131,10 @@ public class BddByImage extends JLayeredPane {
 
 	public void setText(String text) {
 		textArea.setText(text);
+	}
+
+	public String getText(){
+		return textArea.getText();
 	}
 
 }

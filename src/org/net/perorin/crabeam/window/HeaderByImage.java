@@ -57,4 +57,8 @@ public class HeaderByImage extends JPanel {
 		txtLbl.setText(text);
 	}
 
+	public String getText(){
+		return txtLbl.getText();
+	}
+
 }

@@ -8,13 +8,7 @@
         <require>true</require>
         <order>0</order>
         <type>Integer</type>
-    </head_item_list>
-    <head_item_list>
-        <address>1</address>
-        <name>エビデンス№</name>
-        <require>true</require>
-        <order>1</order>
-        <type>String</type>
+        <show_name>true</show_name>
     </head_item_list>
     <given>
         <address>3</address>

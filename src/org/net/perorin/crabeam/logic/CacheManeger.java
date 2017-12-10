@@ -6,7 +6,7 @@ import org.net.perorin.crabeam.cv.CVImage;
 
 public class CacheManeger {
 
-	private static String CACHE_FOLDER = "./contents/cache/";
+	public static String CACHE_FOLDER = "./contents/cache/";
 
 	public static void cacheImage(String key, CVImage img) {
 		System.out.println("cache : " + key + "," + key.hashCode());
@@ -22,6 +22,13 @@ public class CacheManeger {
 			}
 		}
 		return null;
+	}
+
+	public static void clear() {
+		File caches[] = new File(CACHE_FOLDER).listFiles();
+		for (File cache : caches) {
+			cache.delete();
+		}
 	}
 
 }

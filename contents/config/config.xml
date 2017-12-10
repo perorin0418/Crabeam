@@ -13,8 +13,14 @@
         <when_ext>_When</when_ext>
     </crabeam>
     <crablaser>
-        <on_top>false</on_top>
+        <comp_image>true</comp_image>
+        <cursor_type>DEFAULT</cursor_type>
+        <image_height_limit>480</image_height_limit>
+        <image_width_limit>640</image_width_limit>
+        <on_top>true</on_top>
         <save_full>false</save_full>
-        <split_location>100</split_location>
+        <save_path>C:\Users\perorin\Desktop\Desktop\pleiades\workspace\Crabeam\contents\test</save_path>
+        <save_type>png</save_type>
+        <split_location>200</split_location>
     </crablaser>
 </config>

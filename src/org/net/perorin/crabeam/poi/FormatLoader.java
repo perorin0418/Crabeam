@@ -87,6 +87,11 @@ public class FormatLoader {
 				} else {
 					System.exit(-1);
 				}
+
+				if (format.getHeadItemByOrder(i).isShow_name()) {
+					value = format.getHeadItemByOrder(i).getName() + "[" + value + "]";
+				}
+
 				if (i == 0) {
 					headData.append(value);
 				} else {

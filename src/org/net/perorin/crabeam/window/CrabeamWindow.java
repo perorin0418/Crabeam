@@ -54,7 +54,7 @@ import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.config.Meta;
 import org.net.perorin.crabeam.config.MetaCrabeam;
 import org.net.perorin.crabeam.font.NicoFont;
-import org.net.perorin.crabeam.logic.Logic;
+import org.net.perorin.crabeam.logic.LogicCrabeam;
 import org.net.perorin.crabeam.logic.Shortcut;
 import org.net.perorin.crabeam.table.ImageModel;
 import org.net.perorin.crabeam.table.ImageTable;
@@ -207,7 +207,7 @@ public class CrabeamWindow implements NativeKeyListener {
 					e.printStackTrace();
 				}
 
-				Logic.saveShortcutPreset(shortcutModel);
+				LogicCrabeam.saveShortcutPreset(shortcutModel);
 			}
 		});
 	}
@@ -392,8 +392,8 @@ public class CrabeamWindow implements NativeKeyListener {
 		formatTxt = new JTextField();
 		formatTxt.setBounds(111, 9, 117, 20);
 		formatTxt.setText(config.getFormat());
-		Logic.loadFormat(formatTxt, upDownPnl, currentNoTxt);
-		Logic.updateCurrentNo(formatTxt, upDownPnl, currentNoTxt);
+		LogicCrabeam.loadFormat(formatTxt, upDownPnl, currentNoTxt);
+		LogicCrabeam.updateCurrentNo(formatTxt, upDownPnl, currentNoTxt);
 		optTab1.add(formatTxt);
 
 		JButton button = new JButton("適用");
@@ -403,9 +403,9 @@ public class CrabeamWindow implements NativeKeyListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Logic.loadFormat(formatTxt, upDownPnl, currentNoTxt);
-				Logic.updateCurrentNo(formatTxt, upDownPnl, currentNoTxt);
-				Logic.updateShortcut(upDownPnl, shortcutModel);
+				LogicCrabeam.loadFormat(formatTxt, upDownPnl, currentNoTxt);
+				LogicCrabeam.updateCurrentNo(formatTxt, upDownPnl, currentNoTxt);
+				LogicCrabeam.updateShortcut(upDownPnl, shortcutModel);
 			}
 		});
 		optTab1.add(button);
@@ -502,7 +502,7 @@ public class CrabeamWindow implements NativeKeyListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String path = Logic.getSavePath(savePathTxt.getText(), frame).getPath();
+				String path = LogicCrabeam.getSavePath(savePathTxt.getText(), frame).getPath();
 				if (!"".equals(path)) {
 					savePathTxt.setText(path);
 				}
@@ -629,7 +629,7 @@ public class CrabeamWindow implements NativeKeyListener {
 		scrollPane.setBackground(SystemColor.inactiveCaptionBorder);
 		optTab4.add(scrollPane, BorderLayout.CENTER);
 
-		shortcutModel = Logic.loadShortcutPreset();
+		shortcutModel = LogicCrabeam.loadShortcutPreset();
 		shortcutTable = new ShortcutTable(shortcutModel);
 		scrollPane.setViewportView(shortcutTable);
 		scrollPane.getViewport().setOpaque(true);
@@ -650,12 +650,12 @@ public class CrabeamWindow implements NativeKeyListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				scList = Logic.loadShortcut(shortcutModel);
+				scList = LogicCrabeam.loadShortcut(shortcutModel);
 			}
 		});
 		panel.add(btnNewButton);
 
-		scList = Logic.loadShortcut(shortcutModel);
+		scList = LogicCrabeam.loadShortcut(shortcutModel);
 
 		optTab4.add(panel, BorderLayout.SOUTH);
 	}
@@ -713,7 +713,7 @@ public class CrabeamWindow implements NativeKeyListener {
 			if (e.getKeyCode() == sc.getKeyCode() && e.getModifiers() == sc.getModifiers()) {
 				if (sc.getShortcut().contains("screenshot")) {
 					if (chkSaveFull.isSelected()) {
-						String ret = Logic.saveScreenshot(
+						String ret = LogicCrabeam.saveScreenshot(
 								section,
 								savePathTxt,
 								currentNoTxt,
@@ -730,7 +730,7 @@ public class CrabeamWindow implements NativeKeyListener {
 						}
 						break;
 					} else {
-						String ret = Logic.saveScreenshotActive(
+						String ret = LogicCrabeam.saveScreenshotActive(
 								section,
 								savePathTxt,
 								currentNoTxt,

@@ -1,31 +1,41 @@
 package org.net.perorin.crabeam.window;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
+import javax.xml.bind.JAXB;
 
 import org.net.perorin.crabeam.config.Constant;
+import org.net.perorin.crabeam.format.TestSuiteFormat;
 
-public class TestSuitePanel extends JPanel {
+public class TestSuitePanel extends JLayeredPane {
 
-	JScrollPane scroll;
-	JPanel labelSuite;
-	HeaderByImage header;
-	BddByImage given;
-	BddByImage when;
-	BddByImage then;
-	PictureCanvas picture;
+	private JScrollPane scroll;
+	private JPanel labelSuite;
+	private HeaderByImage header;
+	private BddByImage given;
+	private BddByImage when;
+	private BddByImage then;
+	private PictureCanvas picture;
+	private TestSuiteFormat format;
+	private JPanel waitPanel;
+	private JLabel waitLbl;
 
-	public TestSuitePanel() {
+	public TestSuitePanel(String format) {
 		super();
 		this.setLayout(null);
 		this.setOpaque(false);
+
+		this.format = JAXB.unmarshal(new File(format), TestSuiteFormat.class);
 
 		scroll = new JScrollPane();
 		scroll.setOpaque(false);
@@ -34,6 +44,7 @@ public class TestSuitePanel extends JPanel {
 		scroll.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scroll.getVerticalScrollBar().setUnitIncrement(5);
 		this.add(scroll, BorderLayout.CENTER);
+		this.setLayer(scroll, 0);
 
 		labelSuite = new JPanel();
 		labelSuite.setLayout(null);
@@ -61,6 +72,14 @@ public class TestSuitePanel extends JPanel {
 
 		picture = new PictureCanvas();
 		labelSuite.add(picture);
+
+		waitPanel = new JPanel();
+		waitPanel.setBackground(new Color(252, 254, 252));
+		waitPanel.setVisible(false);
+		waitLbl = new JLabel(new ImageIcon(Constant.LOADING_GIF));
+		waitPanel.add(waitLbl, BorderLayout.CENTER);
+		this.add(waitPanel);
+		this.setLayer(waitPanel, 1);
 	}
 
 	@Override
@@ -84,6 +103,8 @@ public class TestSuitePanel extends JPanel {
 
 		labelSuite.setBounds(0, 0, width, 110 + height_given + height_when + height_then + height_picture);
 		labelSuite.setPreferredSize(new Dimension(width, 110 + height_given + height_when + height_then + height_picture));
+
+		waitPanel.setBounds(0, height / 2 - 220, width, 440);
 	}
 
 	public void setHeadText(String text) {
@@ -104,6 +125,99 @@ public class TestSuitePanel extends JPanel {
 
 	public void setPicture(String imgPath) {
 		picture.setPicture(imgPath);
+	}
+
+	public void setWait(boolean wait) {
+		waitPanel.setVisible(wait);
+	}
+
+	public void pictureRefresh() {
+		picture.refresh();
+	}
+
+	public String getHeadText() {
+		return header.getText();
+	}
+
+	public void toggleSelect() {
+		if (given.isSelect()) {
+			given.deselect();
+			when.select();
+		} else if (when.isSelect()) {
+			when.deselect();
+			then.select();
+		} else if (then.isSelect()) {
+			then.deselect();
+			given.select();
+		} else {
+			given.select();
+		}
+	}
+
+	public void unToggleSelect() {
+		if (given.isSelect()) {
+			given.deselect();
+			then.select();
+		} else if (when.isSelect()) {
+			when.deselect();
+			given.select();
+		} else if (then.isSelect()) {
+			then.deselect();
+			when.select();
+		} else {
+			given.select();
+		}
+	}
+
+	public String getSelect() {
+		StringBuffer ret = new StringBuffer();
+		if (given.isSelect()) {
+			ret.append("Given");
+		}
+		if (when.isSelect()) {
+			if (!"".equals(ret.toString())) {
+				ret.append("-");
+			}
+			ret.append("When");
+		}
+		if (then.isSelect()) {
+			if (!"".equals(ret.toString())) {
+				ret.append("-");
+			}
+			ret.append("Then");
+		}
+		return ret.toString();
+	}
+
+	public String getTestSuiteText(boolean escape) {
+		StringBuffer ret = new StringBuffer();
+		if (given.isSelect()) {
+			ret.append(format.getGiven().getName());
+			ret.append("\n");
+			ret.append(given.getText());
+		}
+		if (when.isSelect()) {
+			if (!"".equals(ret.toString())) {
+				ret.append("\n");
+				ret.append(format.getWhen().getName());
+				ret.append("\n");
+			}
+			ret.append(when.getText());
+		}
+		if (then.isSelect()) {
+			if (!"".equals(ret.toString())) {
+				ret.append("\n");
+				ret.append(format.getThen().getName());
+				ret.append("\n");
+			}
+			ret.append(when.getText());
+		}
+
+		if (escape) {
+			return ret.toString().replace("\n", "\\n");
+		} else {
+			return ret.toString();
+		}
 	}
 
 	public void setScrollEnable(boolean b) {

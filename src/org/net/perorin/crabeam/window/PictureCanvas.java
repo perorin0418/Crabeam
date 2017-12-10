@@ -9,11 +9,13 @@ import javax.swing.JLayeredPane;
 import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.cv.CV;
 import org.net.perorin.crabeam.cv.CVImage;
+import org.net.perorin.crabeam.logic.CacheManeger;
 
 public class PictureCanvas extends JLayeredPane {
 
 	CVImage img;
 	CVImage picture;
+	String imgPath;
 	JLabel imgLbl;
 	JLabel pictureLbl;
 
@@ -51,7 +53,7 @@ public class PictureCanvas extends JLayeredPane {
 
 		if (picture != null) {
 			int width_limit = (int) (img.getWidth() * 0.8);
-			int height_limit = (int) (img.getHeight() * 0.8);
+			int height_limit = (int) (img.getHeight() * 0.7);
 
 			double mag_pic = (double) height_limit / (double) picture.getHeight();
 
@@ -59,7 +61,13 @@ public class PictureCanvas extends JLayeredPane {
 				mag_pic = (double) width_limit / (double) picture.getWidth();
 			}
 
-			picture = CV.resize(picture, mag_pic);
+			CVImage cache_picture = CacheManeger.uncacheImage("picture" + imgPath + mag_pic);
+			if (cache_picture != null) {
+				picture = cache_picture;
+			} else {
+				picture = CV.resize(picture, mag_pic);
+				CacheManeger.cacheImage("picture" + imgPath + mag_pic, picture);
+			}
 
 			pictureLbl.setIcon(new ImageIcon(picture.getImageBuffer()));
 			pictureLbl.setBounds(
@@ -71,7 +79,12 @@ public class PictureCanvas extends JLayeredPane {
 	}
 
 	public void setPicture(String imgPath) {
+		this.imgPath = imgPath;
 		this.picture = new CVImage(imgPath);
+	}
+
+	public void refresh() {
+		setBounds(this.getBounds().x, this.getBounds().y, this.getBounds().width);
 	}
 
 	public int getPreferredHeight() {

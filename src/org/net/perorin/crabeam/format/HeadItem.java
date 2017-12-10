@@ -7,6 +7,7 @@ public class HeadItem {
 	private int address;
 	private int order;
 	private String type;
+	private boolean show_name;
 
 	public String getName() {
 		return name;
@@ -46,6 +47,14 @@ public class HeadItem {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public boolean isShow_name() {
+		return show_name;
+	}
+
+	public void setShow_name(boolean show_name) {
+		this.show_name = show_name;
 	}
 
 }
