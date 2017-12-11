@@ -3,6 +3,7 @@ package org.net.perorin.crabeam.window;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,8 +26,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.bind.JAXB;
@@ -45,33 +48,41 @@ public class CrabLaserEdit {
 	public CrabLaserWindow parent;
 	public boolean isParentOnTop;
 	public FormatLoader testData;
-	public HashMap<String, LinkedList<String>> pictureMap;
+	public HashMap<String, LinkedList<String>> pictureAfterMap;
+	public HashMap<String, LinkedList<String>> pictureBeforeMap;
 
 	public JFrame frame;
-	private EvidenceEditTable table;
-	private EvidenceEditModel model;
+	private EvidenceEditTable tableAfter;
+	private EvidenceEditModel modelAfter;
 	private JPanel mainPanel;
 	private JPanel selectPanel;
-	private JPanel tablePanel;
+	private JPanel tableAfterPanel;
 	private JPanel picturePanel;
 	private JPanel footerPanel;
 	private JComboBox<String> comboBox;
 	private PictureCanvas pictureCanvas;
 
-	private ArrayList<String> delList;
+	private ArrayList<String> delListAfter;
+	private ArrayList<String> delListBefore;
+	private JPanel tableBeforePanel;
+	private EvidenceEditModel modelBefore;
+	private EvidenceEditTable tableBefore;
 
-	public CrabLaserEdit(CrabLaserWindow parent, FormatLoader testData, HashMap<String, LinkedList<String>> pictureMap) {
+	public CrabLaserEdit(CrabLaserWindow parent, FormatLoader testData, HashMap<String, LinkedList<String>> pictureAfterMap, HashMap<String, LinkedList<String>> pictureBeforeMap) {
 		this.parent = parent;
 		this.testData = testData;
-		this.pictureMap = pictureMap;
+		this.pictureAfterMap = pictureAfterMap;
+		this.pictureBeforeMap = pictureBeforeMap;
 		initialize();
 		initFramePanel();
 		initMainPanel();
 		initSelectPanel();
-		initTablePanel();
+		initTableAfterPanel();
+		initTableBeforePanel();
 		initPicturePanel();
 		initFooterPanel();
-		loadEvidenceData();
+		loadAfterEvidenceData();
+		loadBeforeEvidenceData();
 		initFinal();
 	}
 
@@ -79,7 +90,8 @@ public class CrabLaserEdit {
 		isParentOnTop = parent.frame.isAlwaysOnTop();
 		parent.frame.setAlwaysOnTop(false);
 		parent.frame.setEnabled(false);
-		delList = new ArrayList<>();
+		delListAfter = new ArrayList<>();
+		delListBefore = new ArrayList<>();
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -91,7 +103,7 @@ public class CrabLaserEdit {
 
 	private void initFramePanel() {
 		frame = new JFrame();
-		frame.setBounds(parent.frame.getX(), parent.frame.getY(), 320, 500);
+		frame.setBounds(parent.frame.getX(), parent.frame.getY(), 635, 800);
 		frame.setAlwaysOnTop(true);
 		frame.setResizable(false);
 		frame.setIconImage(new ImageIcon(Constant.ICON_PATH).getImage());
@@ -117,12 +129,13 @@ public class CrabLaserEdit {
 
 	private void initSelectPanel() {
 		selectPanel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) selectPanel.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
 		selectPanel.setBackground(SystemColor.inactiveCaptionBorder);
 		mainPanel.add(selectPanel, BorderLayout.NORTH);
+		selectPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		comboBox = new JComboBox<String>();
+		comboBox.setFont(new Font("メイリオ", Font.PLAIN, 12));
+		comboBox.setPreferredSize(new Dimension(500, 30));
 		selectPanel.add(comboBox);
 
 		for (int i = 0; i < testData.size(); i++) {
@@ -131,35 +144,78 @@ public class CrabLaserEdit {
 
 	}
 
-	private void initTablePanel() {
-		tablePanel = new JPanel();
-		tablePanel.setBackground(SystemColor.inactiveCaptionBorder);
-		mainPanel.add(tablePanel, BorderLayout.CENTER);
-		tablePanel.setLayout(new BorderLayout(0, 0));
+	private void initTableAfterPanel() {
+		tableAfterPanel = new JPanel();
+		tableAfterPanel.setBackground(SystemColor.inactiveCaptionBorder);
+		tableAfterPanel.setLayout(new BorderLayout(0, 0));
+		tableAfterPanel.setPreferredSize(new Dimension(310, 0));
+		mainPanel.add(tableAfterPanel, BorderLayout.WEST);
+
+		JLabel lblTableAfterTitle = new JLabel("修正後");
+		lblTableAfterTitle.setFont(new Font("メイリオ", Font.PLAIN, 15));
+		lblTableAfterTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		tableAfterPanel.add(lblTableAfterTitle, BorderLayout.NORTH);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getViewport().setBackground(SystemColor.inactiveCaptionBorder);
-		tablePanel.add(scrollPane);
-		model = new EvidenceEditModel();
-		table = new EvidenceEditTable(model) {
+		tableAfterPanel.add(scrollPane);
+		modelAfter = new EvidenceEditModel();
+		tableAfter = new EvidenceEditTable(modelAfter) {
 
 			@Override
 			public void beforeRowRemove() {
-				delList.add(model.getValueAt(table.getSelectedRow(), 5).toString());
-				delList.add(model.getValueAt(table.getSelectedRow(), 6).toString());
+				delListAfter.add(modelAfter.getValueAt(tableAfter.getSelectedRow(), 5).toString());
+				delListAfter.add(modelAfter.getValueAt(tableAfter.getSelectedRow(), 6).toString());
 			}
 		};
-		table.addMouseListener(new MouseAdapter() {
+		tableAfter.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				int row = table.getSelectedRow();
-				if (table.getSelectedColumn() == 3) {
+				int row = tableAfter.getSelectedRow();
+				if (tableAfter.getSelectedColumn() == 3) {
 					return;
 				}
-				pictureCanvas.setPicture(model.getValueAt(row, 6).toString());
+				pictureCanvas.setPicture(modelAfter.getValueAt(row, 6).toString());
 				pictureCanvas.refresh();
 			}
 		});
-		scrollPane.setViewportView(table);
+		scrollPane.setViewportView(tableAfter);
+	}
+
+	private void initTableBeforePanel() {
+		tableBeforePanel = new JPanel();
+		tableBeforePanel.setBackground(SystemColor.inactiveCaptionBorder);
+		tableBeforePanel.setLayout(new BorderLayout(0, 0));
+		tableBeforePanel.setPreferredSize(new Dimension(310, 0));
+		mainPanel.add(tableBeforePanel, BorderLayout.EAST);
+
+		JLabel lblTableBeforeTitle = new JLabel("修正前");
+		lblTableBeforeTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTableBeforeTitle.setFont(new Font("メイリオ", Font.PLAIN, 15));
+		tableBeforePanel.add(lblTableBeforeTitle, BorderLayout.NORTH);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.getViewport().setBackground(SystemColor.inactiveCaptionBorder);
+		tableBeforePanel.add(scrollPane);
+		modelBefore = new EvidenceEditModel();
+		tableBefore = new EvidenceEditTable(modelBefore) {
+
+			@Override
+			public void beforeRowRemove() {
+				delListBefore.add(modelBefore.getValueAt(tableBefore.getSelectedRow(), 5).toString());
+				delListBefore.add(modelBefore.getValueAt(tableBefore.getSelectedRow(), 6).toString());
+			}
+		};
+		tableBefore.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int row = tableBefore.getSelectedRow();
+				if (tableBefore.getSelectedColumn() == 3) {
+					return;
+				}
+				pictureCanvas.setPicture(modelBefore.getValueAt(row, 6).toString());
+				pictureCanvas.refresh();
+			}
+		});
+		scrollPane.setViewportView(tableBefore);
 	}
 
 	private void initPicturePanel() {
@@ -227,16 +283,17 @@ public class CrabLaserEdit {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				loadEvidenceData();
+				loadAfterEvidenceData();
+				loadBeforeEvidenceData();
 			}
 		});
 	}
 
-	private void loadEvidenceData() {
-		model.setRowCount(0);
+	private void loadAfterEvidenceData() {
+		modelAfter.setRowCount(0);
 		ConfigCrabLaser config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrablaser();
 		ArrayList<EvidenceInformation> list = new ArrayList<EvidenceInformation>();
-		File path = new File(config.getSave_path() + "\\" + comboBox.getSelectedItem());
+		File path = new File(config.getSave_path() + "\\" + "after" + "\\" + comboBox.getSelectedItem());
 		if (path.exists()) {
 			for (File file : path.listFiles()) {
 				if (file.getPath().endsWith("info")) {
@@ -257,10 +314,42 @@ public class CrabLaserEdit {
 					evidenceName,
 					"",
 					ei,
-					config.getSave_path() + "\\" + comboBox.getSelectedItem() + "\\" + evidenceName + ".info",
-					config.getSave_path() + "\\" + comboBox.getSelectedItem() + "\\" + evidenceName + "." + config.getSave_type()
+					config.getSave_path() + "\\" + "after" + "\\" + comboBox.getSelectedItem() + "\\" + evidenceName + ".info",
+					config.getSave_path() + "\\" + "after" + "\\" + comboBox.getSelectedItem() + "\\" + evidenceName + "." + config.getSave_type()
 			};
-			model.addRow(obj);
+			modelAfter.addRow(obj);
+		}
+	}
+
+	private void loadBeforeEvidenceData() {
+		modelBefore.setRowCount(0);
+		ConfigCrabLaser config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrablaser();
+		ArrayList<EvidenceInformation> list = new ArrayList<EvidenceInformation>();
+		File path = new File(config.getSave_path() + "\\" + "before" + "\\" + comboBox.getSelectedItem());
+		if (path.exists()) {
+			for (File file : path.listFiles()) {
+				if (file.getPath().endsWith("info")) {
+					EvidenceInformation ei = JAXB.unmarshal(file, EvidenceInformation.class);
+					list.add(ei);
+				}
+			}
+		}
+		for (int i = 0; i < list.size(); i++) {
+			EvidenceInformation ei = LogicCrabLaser.getByOrder(list, i);
+			String order = "Ξ";
+			String bdd = ei.getBdd();
+			String evidenceName = ei.getEvidence_name();
+
+			Object[] obj = {
+					order,
+					bdd,
+					evidenceName,
+					"",
+					ei,
+					config.getSave_path() + "\\" + "before" + "\\" + comboBox.getSelectedItem() + "\\" + evidenceName + ".info",
+					config.getSave_path() + "\\" + "before" + "\\" + comboBox.getSelectedItem() + "\\" + evidenceName + "." + config.getSave_type()
+			};
+			modelBefore.addRow(obj);
 		}
 	}
 
@@ -270,18 +359,28 @@ public class CrabLaserEdit {
 
 	private void apply() {
 		ConfigCrabLaser config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrablaser();
-		for (String delStr : delList) {
+		for (String delStr : delListAfter) {
 			File delFile = new File(delStr);
 			if (delFile.exists()) {
 				delFile.delete();
 				if (delFile.getPath().endsWith(config.getSave_type())) {
-					LinkedList<String> list = pictureMap.get(comboBox.getSelectedItem());
+					LinkedList<String> list = pictureAfterMap.get(comboBox.getSelectedItem());
+					list.remove(delFile.getPath());
+				}
+			}
+		}
+		for (String delStr : delListBefore) {
+			File delFile = new File(delStr);
+			if (delFile.exists()) {
+				delFile.delete();
+				if (delFile.getPath().endsWith(config.getSave_type())) {
+					LinkedList<String> list = pictureBeforeMap.get(comboBox.getSelectedItem());
 					list.remove(delFile.getPath());
 				}
 			}
 		}
 
-		Vector rows = model.getDataVector();
+		Vector rows = modelAfter.getDataVector();
 		for (int i = 0; i < rows.size(); i++) {
 			try {
 				Vector row = (Vector) rows.get(i);
@@ -304,7 +403,32 @@ public class CrabLaserEdit {
 				e.printStackTrace();
 			}
 		}
-		loadEvidenceData();
+		loadAfterEvidenceData();
+
+		rows = modelBefore.getDataVector();
+		for (int i = 0; i < rows.size(); i++) {
+			try {
+				Vector row = (Vector) rows.get(i);
+				EvidenceInformation ei = (EvidenceInformation) row.get(4);
+				String evidenceName = row.get(2).toString();
+				ei.setOrder(i);
+				ei.setBdd(row.get(1).toString());
+				ei.setEvidence_name(evidenceName);
+				ei.setImage_name(evidenceName + "." + config.getSave_type());
+				FileOutputStream fos = new FileOutputStream(row.get(5).toString());
+				JAXB.marshal(ei, fos);
+				fos.close();
+				File infoFile = new File(row.get(5).toString());
+				File imgFile = new File(row.get(6).toString());
+				infoFile.renameTo(new File(infoFile.getParent() + "\\" + evidenceName + ".info"));
+				imgFile.renameTo(new File(imgFile.getParent() + "\\" + evidenceName + "." + config.getSave_type()));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		loadAfterEvidenceData();
 	}
 
 }

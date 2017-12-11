@@ -3,7 +3,9 @@ package org.net.perorin.crabeam.window;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -27,12 +29,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.bind.JAXB;
@@ -63,11 +69,16 @@ public class CrabLaserWindow implements NativeKeyListener {
 	public int currentNo = 0;
 	public JPanel underPanel;
 	public TestSuitePanel currentTestSuite;
-	public JPanel picturePanel;
-	public HashMap<String, LinkedList<String>> pictureMap;
-	private JScrollPane pictureScrollPane;
+	public JPanel pictureBeforePanel;
+	public HashMap<String, LinkedList<String>> pictureAfterMap;
+	public HashMap<String, LinkedList<String>> pictureBeforeMap;
+	private JScrollPane pictureBeforeScrollPane;
 	private RoundButton prev;
 	private RoundButton next;
+	private JScrollPane pictureAfterScrollPane;
+	private JPanel pictureAfterPanel;
+	public JRadioButton rdbtnAfter;
+	public JRadioButton rdbtnBefore;
 
 	public CrabLaserWindow(String excel, String format) {
 		initialize(excel, format);
@@ -169,13 +180,47 @@ public class CrabLaserWindow implements NativeKeyListener {
 	}
 
 	private void initPicturePanel() {
-		pictureScrollPane = new JScrollPane();
-		pictureScrollPane.getHorizontalScrollBar().setUnitIncrement(5);
-		underPanel.add(pictureScrollPane, BorderLayout.CENTER);
+		pictureAfterScrollPane = new JScrollPane();
+		pictureAfterScrollPane.getHorizontalScrollBar().setUnitIncrement(5);
+		pictureAfterScrollPane.setPreferredSize(new Dimension(0, 100));
+		underPanel.add(pictureAfterScrollPane, BorderLayout.NORTH);
 
-		picturePanel = new JPanel();
-		picturePanel.setBackground(SystemColor.inactiveCaptionBorder);
-		pictureScrollPane.setViewportView(picturePanel);
+		JPanel pictureAfterMainPanel = new JPanel();
+		pictureAfterMainPanel.setLayout(new BorderLayout(0, 0));
+		pictureAfterScrollPane.setViewportView(pictureAfterMainPanel);
+
+		JLabel pictureAfterTitleLabel = new JLabel("<html>修<br>正<br>後");
+		pictureAfterTitleLabel.setFont(new Font("メイリオ", Font.PLAIN, 14));
+		pictureAfterTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		pictureAfterTitleLabel.setBackground(SystemColor.inactiveCaption);
+		pictureAfterTitleLabel.setOpaque(true);
+		pictureAfterTitleLabel.setPreferredSize(new Dimension(30, 0));
+		pictureAfterMainPanel.add(pictureAfterTitleLabel, BorderLayout.WEST);
+
+		pictureAfterPanel = new JPanel();
+		pictureAfterPanel.setBackground(SystemColor.inactiveCaptionBorder);
+		pictureAfterMainPanel.add(pictureAfterPanel, BorderLayout.CENTER);
+
+		pictureBeforeScrollPane = new JScrollPane();
+		pictureBeforeScrollPane.getHorizontalScrollBar().setUnitIncrement(5);
+		pictureBeforeScrollPane.setPreferredSize(new Dimension(0, 100));
+		underPanel.add(pictureBeforeScrollPane, BorderLayout.CENTER);
+
+		JPanel pictureBeforeMainPanel = new JPanel();
+		pictureBeforeMainPanel.setLayout(new BorderLayout(0, 0));
+		pictureBeforeScrollPane.setViewportView(pictureBeforeMainPanel);
+
+		JLabel pictureBeforeTitleLabel = new JLabel("<html>修<br>正<br>前");
+		pictureBeforeTitleLabel.setFont(new Font("メイリオ", Font.PLAIN, 14));
+		pictureBeforeTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		pictureBeforeTitleLabel.setBackground(SystemColor.inactiveCaption);
+		pictureBeforeTitleLabel.setOpaque(true);
+		pictureBeforeTitleLabel.setPreferredSize(new Dimension(30, 0));
+		pictureBeforeMainPanel.add(pictureBeforeTitleLabel, BorderLayout.WEST);
+
+		pictureBeforePanel = new JPanel();
+		pictureBeforePanel.setBackground(SystemColor.inactiveCaptionBorder);
+		pictureBeforeMainPanel.add(pictureBeforePanel, BorderLayout.CENTER);
 	}
 
 	private void initButtonPanel() {
@@ -196,10 +241,18 @@ public class CrabLaserWindow implements NativeKeyListener {
 				if (0 < currentNo) {
 					currentNo--;
 					reloadTestSuite();
-					if (pictureMap.containsKey(currentTestSuite.getHeadText())) {
-						LinkedList<String> list = pictureMap.get(currentTestSuite.getHeadText());
-						currentTestSuite.setPicture(list.getLast());
-						currentTestSuite.pictureRefresh();
+					if (rdbtnAfter.isSelected()) {
+						if (pictureAfterMap.containsKey(currentTestSuite.getHeadText())) {
+							LinkedList<String> list = pictureAfterMap.get(currentTestSuite.getHeadText());
+							currentTestSuite.setPicture(list.getLast());
+							currentTestSuite.pictureRefresh();
+						}
+					} else {
+						if (pictureBeforeMap.containsKey(currentTestSuite.getHeadText())) {
+							LinkedList<String> list = pictureBeforeMap.get(currentTestSuite.getHeadText());
+							currentTestSuite.setPicture(list.getLast());
+							currentTestSuite.pictureRefresh();
+						}
 					}
 				}
 			}
@@ -230,10 +283,18 @@ public class CrabLaserWindow implements NativeKeyListener {
 				if (currentNo < testData.size() - 1) {
 					currentNo++;
 					reloadTestSuite();
-					if (pictureMap.containsKey(currentTestSuite.getHeadText())) {
-						LinkedList<String> list = pictureMap.get(currentTestSuite.getHeadText());
-						currentTestSuite.setPicture(list.getLast());
-						currentTestSuite.pictureRefresh();
+					if (rdbtnAfter.isSelected()) {
+						if (pictureAfterMap.containsKey(currentTestSuite.getHeadText())) {
+							LinkedList<String> list = pictureAfterMap.get(currentTestSuite.getHeadText());
+							currentTestSuite.setPicture(list.getLast());
+							currentTestSuite.pictureRefresh();
+						}
+					} else {
+						if (pictureBeforeMap.containsKey(currentTestSuite.getHeadText())) {
+							LinkedList<String> list = pictureBeforeMap.get(currentTestSuite.getHeadText());
+							currentTestSuite.setPicture(list.getLast());
+							currentTestSuite.pictureRefresh();
+						}
 					}
 				}
 			}
@@ -264,12 +325,31 @@ public class CrabLaserWindow implements NativeKeyListener {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CrabLaserEdit cle = new CrabLaserEdit(CrabLaserWindow.this, testData, pictureMap);
+				CrabLaserEdit cle = new CrabLaserEdit(CrabLaserWindow.this, testData, pictureAfterMap, pictureBeforeMap);
 				cle.setSelect(currentTestSuite.getHeadText());
 				cle.frame.setVisible(true);
 			}
 		});
 		buttonPanel.add(menu);
+
+		JPanel panel = new JPanel();
+		buttonPanel.add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		rdbtnAfter = new JRadioButton("修正後");
+		rdbtnAfter.setBackground(Color.WHITE);
+		rdbtnAfter.setFont(new Font("メイリオ", Font.PLAIN, 12));
+		rdbtnAfter.setSelected(true);
+		panel.add(rdbtnAfter, BorderLayout.NORTH);
+
+		rdbtnBefore = new JRadioButton("修正前");
+		rdbtnBefore.setBackground(Color.WHITE);
+		rdbtnBefore.setFont(new Font("メイリオ", Font.PLAIN, 12));
+		panel.add(rdbtnBefore, BorderLayout.SOUTH);
+
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(rdbtnAfter);
+		bg.add(rdbtnBefore);
 
 	}
 
@@ -302,14 +382,31 @@ public class CrabLaserWindow implements NativeKeyListener {
 	}
 
 	public void reloadScreenShotThumb() {
-		picturePanel.removeAll();
-		if (pictureMap.containsKey(currentTestSuite.getHeadText())) {
-			LinkedList<String> list = pictureMap.get(currentTestSuite.getHeadText());
+		boolean isAfter = rdbtnAfter.isSelected();
+		rdbtnAfter.setSelected(true);
+		pictureAfterPanel.removeAll();
+		if (pictureAfterMap.containsKey(currentTestSuite.getHeadText())) {
+			LinkedList<String> list = pictureAfterMap.get(currentTestSuite.getHeadText());
 			for (String imgFile : list) {
 				addScreenShotThumb(imgFile);
 			}
 		}
-		picturePanel.updateUI();
+		pictureAfterPanel.updateUI();
+
+		rdbtnBefore.setSelected(true);
+		pictureBeforePanel.removeAll();
+		if (pictureBeforeMap.containsKey(currentTestSuite.getHeadText())) {
+			LinkedList<String> list = pictureBeforeMap.get(currentTestSuite.getHeadText());
+			for (String imgFile : list) {
+				addScreenShotThumb(imgFile);
+			}
+		}
+		pictureBeforePanel.updateUI();
+		if (isAfter) {
+			rdbtnAfter.setSelected(true);
+		} else {
+			rdbtnBefore.setSelected(true);
+		}
 	}
 
 	private void addScreenShotThumb(String imgFile) {
@@ -320,21 +417,31 @@ public class CrabLaserWindow implements NativeKeyListener {
 			public void mouseClicked(MouseEvent e) {
 				currentTestSuite.setPicture(imgFile);
 				currentTestSuite.pictureRefresh();
-				for (Component buf : picturePanel.getComponents()) {
+				for (Component buf : pictureAfterPanel.getComponents()) {
+					((ScreenShotThumb) buf).diselect();
+				}
+				for (Component buf : pictureBeforePanel.getComponents()) {
 					((ScreenShotThumb) buf).diselect();
 				}
 				sst.select();
 			}
 		});
-		picturePanel.add(sst);
-		for (Component buf : picturePanel.getComponents()) {
-			((ScreenShotThumb) buf).diselect();
+		if (rdbtnAfter.isSelected()) {
+			pictureAfterPanel.add(sst);
+			for (Component buf : pictureAfterPanel.getComponents()) {
+				((ScreenShotThumb) buf).diselect();
+			}
+		} else {
+			pictureBeforePanel.add(sst);
+			for (Component buf : pictureBeforePanel.getComponents()) {
+				((ScreenShotThumb) buf).diselect();
+			}
 		}
-		sst.select();
 	}
 
 	public void loadPictureMap() {
-		pictureMap = LogicCrabLaser.loadPictureMap(testData);
+		pictureAfterMap = LogicCrabLaser.loadPictureMap(testData, "after");
+		pictureBeforeMap = LogicCrabLaser.loadPictureMap(testData, "before");
 	}
 
 	private void suppressLogger() {
@@ -374,22 +481,41 @@ public class CrabLaserWindow implements NativeKeyListener {
 		if (e.getKeyCode() == 3639 && (e.getModifiers() == 0 || e.getModifiers() == 256)) {
 			currentTestSuite.setWait(true);
 			String imgFile = LogicCrabLaser.screenShot(this);
-			if (pictureMap.containsKey(currentTestSuite.getHeadText())) {
-				LinkedList<String> list = pictureMap.get(currentTestSuite.getHeadText());
-				list.add(imgFile);
+			if (rdbtnAfter.isSelected()) {
+				if (pictureAfterMap.containsKey(currentTestSuite.getHeadText())) {
+					LinkedList<String> list = pictureAfterMap.get(currentTestSuite.getHeadText());
+					list.add(imgFile);
+				} else {
+					LinkedList<String> list = new LinkedList<String>();
+					list.add(imgFile);
+					pictureAfterMap.put(currentTestSuite.getHeadText(), list);
+				}
 			} else {
-				LinkedList<String> list = new LinkedList<String>();
-				list.add(imgFile);
-				pictureMap.put(currentTestSuite.getHeadText(), list);
+				if (pictureBeforeMap.containsKey(currentTestSuite.getHeadText())) {
+					LinkedList<String> list = pictureBeforeMap.get(currentTestSuite.getHeadText());
+					list.add(imgFile);
+				} else {
+					LinkedList<String> list = new LinkedList<String>();
+					list.add(imgFile);
+					pictureBeforeMap.put(currentTestSuite.getHeadText(), list);
+				}
 			}
 			currentTestSuite.setPicture(imgFile);
 			currentTestSuite.pictureRefresh();
 			addScreenShotThumb(imgFile);
-			picturePanel.updateUI();
-			wait(100);
-			JScrollBar hBar = pictureScrollPane.getHorizontalScrollBar();
-			int hBarMax = hBar.getMaximum();
-			hBar.setValue(hBarMax);
+			if (rdbtnAfter.isSelected()) {
+				pictureAfterPanel.updateUI();
+				wait(100);
+				JScrollBar hBar = pictureAfterScrollPane.getHorizontalScrollBar();
+				int hBarMax = hBar.getMaximum();
+				hBar.setValue(hBarMax);
+			} else {
+				pictureBeforePanel.updateUI();
+				wait(100);
+				JScrollBar hBar = pictureBeforeScrollPane.getHorizontalScrollBar();
+				int hBarMax = hBar.getMaximum();
+				hBar.setValue(hBarMax);
+			}
 			currentTestSuite.setWait(false);
 		} else if (e.getKeyCode() == 57421 && e.getModifiers() == 8) {
 			next.doClick();

@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,7 @@ import org.net.perorin.crabeam.config.Constant;
 import org.net.perorin.crabeam.cv.CV;
 import org.net.perorin.crabeam.cv.CVImage;
 import org.net.perorin.crabeam.format.EvidenceInformation;
+import org.net.perorin.crabeam.format.FolderList;
 import org.net.perorin.crabeam.poi.FormatLoader;
 import org.net.perorin.crabeam.window.CrabLaserWindow;
 
@@ -47,6 +49,19 @@ public class LogicCrabLaser {
 			StringBuffer imgFileName = new StringBuffer();
 			imgFileName.append(config.getSave_path());
 			imgFileName.append("\\");
+
+			if (crablaser.rdbtnAfter.isSelected()) {
+				imgFileName.append("after");
+				imgFileName.append("\\");
+				new File(imgFileName.toString()).mkdir();
+				createFolderList(new File(imgFileName.toString() + "FolderList.xml"), crablaser.testData);
+			} else {
+				imgFileName.append("before");
+				imgFileName.append("\\");
+				new File(imgFileName.toString()).mkdir();
+				createFolderList(new File(imgFileName.toString() + "FolderList.xml"), crablaser.testData);
+			}
+
 			imgFileName.append(crablaser.currentTestSuite.getHeadText());
 			File outputFolder = new File(imgFileName.toString());
 			outputFolder.mkdir();
@@ -86,7 +101,12 @@ public class LogicCrabLaser {
 			new File(imgFileName + ".info").createNewFile();
 			EvidenceInformation ei = new EvidenceInformation();
 
-			File outputFolder = new File(config.getSave_path() + "\\" + crablaser.currentTestSuite.getHeadText());
+			File outputFolder = null;
+			if (crablaser.rdbtnAfter.isSelected()) {
+				outputFolder = new File(config.getSave_path() + "\\" + "after" + "\\" + crablaser.currentTestSuite.getHeadText());
+			} else {
+				outputFolder = new File(config.getSave_path() + "\\" + "before" + "\\" + crablaser.currentTestSuite.getHeadText());
+			}
 			int fileCount = outputFolder.listFiles().length == 0 ? 0 : outputFolder.listFiles().length / 2;
 			ei.setOrder(fileCount);
 
@@ -118,6 +138,26 @@ public class LogicCrabLaser {
 		}
 
 		return null;
+	}
+
+	private static void createFolderList(File folderList, FormatLoader testData) {
+		try {
+			if (!folderList.exists()) {
+				ArrayList<String> list = new ArrayList<>();
+				for (int i = 0; i < testData.size(); i++) {
+					list.add(testData.getHeader(i));
+				}
+				FolderList fl = new FolderList();
+				fl.setFolder(list);
+				FileOutputStream fos = new FileOutputStream(folderList);
+				JAXB.marshal(fl, fos);
+				fos.close();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static BufferedImage drawCursor(RECT rect, BufferedImage img) {
@@ -193,12 +233,12 @@ public class LogicCrabLaser {
 		return img1.getImageBuffer();
 	}
 
-	public static HashMap<String, LinkedList<String>> loadPictureMap(FormatLoader testData) {
+	public static HashMap<String, LinkedList<String>> loadPictureMap(FormatLoader testData, String boa) {
 		ConfigCrabLaser config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrablaser();
 		HashMap<String, LinkedList<String>> ret = new HashMap<String, LinkedList<String>>();
 
 		for (int i = 0; i < testData.size(); i++) {
-			File path = new File(config.getSave_path() + "\\" + testData.getHeader(i));
+			File path = new File(config.getSave_path() + "\\" + boa + "\\" + testData.getHeader(i));
 			if (path.exists()) {
 				ArrayList<EvidenceInformation> eiList = new ArrayList<>();
 				for (File file : path.listFiles()) {

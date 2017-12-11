@@ -20,7 +20,6 @@ public class ScreenShotThumb extends JPanel {
 
 	private JLabel lbl;
 	private CVImage img;
-	private boolean isSelect;
 
 	public ScreenShotThumb(String imgFile) {
 		super();
@@ -30,7 +29,7 @@ public class ScreenShotThumb extends JPanel {
 
 		ConfigCrabLaser config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrablaser();
 
-		int height_limit = config.getSplit_location() - 145;
+		int height_limit = config.getSplit_location() - 255;
 		int width_limit = (int) (height_limit * 2);
 
 		double mag_pic = (double) height_limit / (double) img.getHeight();
@@ -52,12 +51,10 @@ public class ScreenShotThumb extends JPanel {
 	}
 
 	public void select() {
-		isSelect = true;
 		this.setBackground(Color.RED);
 	}
 
 	public void diselect() {
-		isSelect = false;
 		this.setBackground(SystemColor.inactiveCaptionBorder);
 	}
 
