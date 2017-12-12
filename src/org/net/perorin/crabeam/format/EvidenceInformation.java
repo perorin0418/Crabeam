@@ -9,6 +9,7 @@ public class EvidenceInformation {
 	private int image_height;
 	private String bdd;
 	private String contents;
+	private String evi_no_address;
 
 	public String getEvidence_name() {
 		return evidence_name;
@@ -65,5 +66,14 @@ public class EvidenceInformation {
 	public void setOrder(int order) {
 		this.order = order;
 	}
+
+	public String getEvi_no_address() {
+		return evi_no_address;
+	}
+
+	public void setEvi_no_address(String evi_no_address) {
+		this.evi_no_address = evi_no_address;
+	}
+
 
 }
