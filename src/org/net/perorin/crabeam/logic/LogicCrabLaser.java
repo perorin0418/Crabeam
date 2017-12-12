@@ -43,7 +43,8 @@ public class LogicCrabLaser {
 				OS.GetWindowRect(OS.GetForegroundWindow(), rect);
 			}
 			Robot robot = new Robot();
-			BufferedImage img = robot.createScreenCapture(new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top));
+			BufferedImage img = robot.createScreenCapture(new Rectangle(rect.left, rect.top, rect.right - rect.left,
+					rect.bottom - rect.top));
 			img = drawCursor(rect, img);
 
 			StringBuffer imgFileName = new StringBuffer();
@@ -65,12 +66,13 @@ public class LogicCrabLaser {
 			imgFileName.append(crablaser.currentTestSuite.getHeadText());
 			File outputFolder = new File(imgFileName.toString());
 			outputFolder.mkdir();
-			//			int fileCount = outputFolder.listFiles().length == 0 ? 0 : outputFolder.listFiles().length / 2;
+			// int fileCount = outputFolder.listFiles().length == 0 ? 0 :
+			// outputFolder.listFiles().length / 2;
 
 			imgFileName.append("\\");
 			imgFileName.append(crablaser.currentTestSuite.getHeadText());
 			imgFileName.append("_");
-			//			imgFileName.append(String.format("%08d", fileCount));
+			// imgFileName.append(String.format("%08d", fileCount));
 			imgFileName.append(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(Calendar.getInstance().getTime()));
 
 			EvidenceInformation ei = createEvidenceInformation(crablaser, imgFileName.toString(), img);
@@ -93,7 +95,8 @@ public class LogicCrabLaser {
 		return "";
 	}
 
-	private static EvidenceInformation createEvidenceInformation(CrabLaserWindow crablaser, String imgFileName, BufferedImage img) {
+	private static EvidenceInformation createEvidenceInformation(CrabLaserWindow crablaser, String imgFileName,
+			BufferedImage img) {
 		try {
 			ConfigCrabLaser config = JAXB.unmarshal(new File(Config.CONFIG_PATH), Config.class).getCrablaser();
 			String fileName = imgFileName.split("\\\\")[imgFileName.split("\\\\").length - 1];
@@ -103,9 +106,11 @@ public class LogicCrabLaser {
 
 			File outputFolder = null;
 			if (crablaser.rdbtnAfter.isSelected()) {
-				outputFolder = new File(config.getSave_path() + "\\" + "after" + "\\" + crablaser.currentTestSuite.getHeadText());
+				outputFolder = new File(config.getSave_path() + "\\" + "after" + "\\"
+						+ crablaser.currentTestSuite.getHeadText());
 			} else {
-				outputFolder = new File(config.getSave_path() + "\\" + "before" + "\\" + crablaser.currentTestSuite.getHeadText());
+				outputFolder = new File(config.getSave_path() + "\\" + "before" + "\\"
+						+ crablaser.currentTestSuite.getHeadText());
 			}
 			int fileCount = outputFolder.listFiles().length == 0 ? 0 : outputFolder.listFiles().length / 2;
 			ei.setOrder(fileCount);
@@ -124,6 +129,8 @@ public class LogicCrabLaser {
 
 			ei.setImage_width((int) (img.getWidth() * mag_pic));
 			ei.setImage_height((int) (img.getHeight() * mag_pic));
+
+			ei.setEvi_no_address(crablaser.testData.getEviNo(crablaser.currentNo));
 
 			ei.setBdd(crablaser.currentTestSuite.getSelect());
 			ei.setContents(crablaser.currentTestSuite.getTestSuiteText(true));
