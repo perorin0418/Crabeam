@@ -8,6 +8,7 @@ public class TestSuiteFormat {
 	private BddItem given;
 	private BddItem when;
 	private BddItem then;
+	private BddItem evi_no;
 	private String sheet_name;
 	private String format_name;
 	private int top;
@@ -102,6 +103,14 @@ public class TestSuiteFormat {
 			}
 		}
 		return null;
+	}
+
+	public BddItem getEvi_no() {
+		return evi_no;
+	}
+
+	public void setEvi_no(BddItem evi_no) {
+		this.evi_no = evi_no;
 	}
 
 }
