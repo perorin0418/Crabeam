@@ -1,5 +1,6 @@
 package org.net.perorin.crabeam.poi;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.List;
 import javax.xml.bind.JAXB;
 
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +29,7 @@ public class FormatLoader {
 	private List<String> givens;
 	private List<String> whens;
 	private List<String> thens;
+	private List<String> evi_nos;
 	private int size;
 
 	public FormatLoader(String excel, String format) {
@@ -40,6 +43,7 @@ public class FormatLoader {
 			givens = createGivens(rawData);
 			whens = createWhens(rawData);
 			thens = createThens(rawData);
+			evi_nos = createEviNos(rawData);
 		} catch (EncryptedDocumentException e) {
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
@@ -63,6 +67,10 @@ public class FormatLoader {
 
 	public String getThen(int index) {
 		return thens.get(index);
+	}
+
+	public String getEviNo(int index) {
+		return evi_nos.get(index);
 	}
 
 	public int size() {
@@ -127,6 +135,17 @@ public class FormatLoader {
 		BddItem bi = format.getThen();
 		for (List<String> row : rawData) {
 			ret.add(row.get(bi.getAddress()));
+		}
+		return ret;
+	}
+
+	private List<String> createEviNos(List<List<String>> rawData) {
+		List<String> ret = new LinkedList<String>();
+		BddItem bi = format.getEvi_no();
+		for (int i = 0; i < rawData.size(); i++) {
+			ret.add(format.getSheet_name() + "!"
+					+ CellReference.convertNumToColString(bi.getAddress() + format.getLeft())
+					+ (format.getTop() + i + 1));
 		}
 		return ret;
 	}
