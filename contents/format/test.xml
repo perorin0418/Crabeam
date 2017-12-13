@@ -22,6 +22,10 @@
         <address>5</address>
         <name>処理結果</name>
     </then>
+    <evi_no>
+        <address>9</address>
+        <name>エビデンス№</name>
+    </evi_no>
     <top>7</top>
     <bottom></bottom>
     <left>0</left>

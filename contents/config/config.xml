@@ -13,7 +13,7 @@
         <when_ext>_When</when_ext>
     </crabeam>
     <crablaser>
-        <comp_image>true</comp_image>
+        <comp_image>false</comp_image>
         <cursor_type>DEFAULT</cursor_type>
         <image_height_limit>480</image_height_limit>
         <image_width_limit>640</image_width_limit>
