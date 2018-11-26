@@ -8,11 +8,13 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/Crabeam/contents/lib/orange_csv/orangesignal-csv-1.3.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="contents/lib/win32/org.eclipse.swt.win32.win32.x86_64_3.104.1.v20150825-0743.jar" sourcepath="contents/lib/win32/org.eclipse.swt.win32.win32.x86_64.source_3.104.1.v20150825-0743.jar"/>
 	<classpathentry kind="lib" path="contents/lib/poi/poi-3.17.jar"/>
 	<classpathentry kind="lib" path="contents/lib/poi/poi-ooxml-3.17.jar"/>
 	<classpathentry kind="lib" path="contents/lib/poi/poi-ooxml-schemas-3.17.jar"/>
 	<classpathentry kind="lib" path="contents/lib/poi/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="contents/lib/poi/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="contents/lib/win32/org.eclipse.swt.win32.win32.x86_3.102.1.v20140206-1358.jar"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

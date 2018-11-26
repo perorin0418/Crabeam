@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <meta>
-    <crabeam>
-        <frame_height>458</frame_height>
-        <frame_width>249</frame_width>
-        <frame_x>1463</frame_x>
-        <frame_y>212</frame_y>
-        <no_width>47</no_width>
-        <ss_width>139</ss_width>
-    </crabeam>
     <crablaser>
-        <frame_height>1087</frame_height>
-        <frame_width>478</frame_width>
-        <frame_x>1297</frame_x>
-        <frame_y>0</frame_y>
+        <frame_height>1048</frame_height>
+        <frame_width>638</frame_width>
+        <frame_x>1241</frame_x>
+        <frame_y>2</frame_y>
     </crablaser>
 </meta>

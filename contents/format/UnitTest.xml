@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<testSuiteFormat>
+    <format_name>単体テスト仕様書</format_name>
+    <sheet_name>イベント確認</sheet_name>
+    <head_item_list>
+        <address>0</address>
+        <name>№</name>
+        <require>true</require>
+        <order>0</order>
+        <type>Integer</type>
+        <show_name>true</show_name>
+    </head_item_list>
+    <given>
+        <address>3</address>
+        <name>【前提条件】</name>
+    </given>
+    <when>
+        <address>4</address>
+        <name>【イベント】</name>
+    </when>
+    <then>
+        <address>5</address>
+        <name>【処理結果】</name>
+    </then>
+    <evi_no>
+        <address>8</address>
+        <name>エビデンス№</name>
+    </evi_no>
+    <top>6</top>
+    <bottom></bottom>
+    <left>0</left>
+    <right>5</right>
+</testSuiteFormat>

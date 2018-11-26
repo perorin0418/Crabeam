@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
-    <crabeam>
-        <auto_count_up>false</auto_count_up>
-        <auto_count_up_no>0</auto_count_up_no>
-        <format>%1-%1-%1</format>
-        <given_ext>_Given</given_ext>
-        <on_top>true</on_top>
-        <save_full>false</save_full>
-        <save_path>C:\Users\perorin\Desktop</save_path>
-        <save_type>png</save_type>
-        <then_ext>_Then</then_ext>
-        <when_ext>_When</when_ext>
-    </crabeam>
     <crablaser>
         <comp_image>false</comp_image>
-        <cursor_type>DEFAULT</cursor_type>
+        <cursor_type>NONE</cursor_type>
         <image_height_limit>480</image_height_limit>
         <image_width_limit>640</image_width_limit>
-        <on_top>true</on_top>
+        <on_top>false</on_top>
         <save_full>false</save_full>
-        <save_path>C:\Users\perorin\Desktop\Desktop\pleiades\workspace\Crabeam\contents\test</save_path>
+        <save_path>D:\screenshot\726\pt</save_path>
         <save_type>png</save_type>
         <split_location>310</split_location>
     </crablaser>
