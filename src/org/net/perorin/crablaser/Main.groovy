@@ -10,7 +10,11 @@ public class Main {
 	public static void main(String[] args) {
 		EventQueue.invokeLater({
 			try {
+
+				// 引数チェック
 				String xlsx = args.size() > 0 ? args[0] : ""
+
+				// 様式選択起動
 				FormatSelector fs = new FormatSelector(xlsx)
 				fs.frame.setVisible(true)
 			} catch (Exception e) {

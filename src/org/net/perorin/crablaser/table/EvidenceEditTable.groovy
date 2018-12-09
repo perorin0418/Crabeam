@@ -189,7 +189,7 @@ class DeleteButtonEditor extends DeleteButton implements TableCellEditor {
 
 		listener = new ActionListener() {
 					public void actionPerformed(ActionEvent e){
-						Object o = SwingUtilities.getAncestorOfClass(JTable.class, this)
+						Object o = SwingUtilities.getAncestorOfClass(JTable.class, DeleteButtonEditor.this)
 						if (o instanceof JTable) {
 							DeleteButtonEditor.this.beforeRemove()
 							JTable table = (JTable) o

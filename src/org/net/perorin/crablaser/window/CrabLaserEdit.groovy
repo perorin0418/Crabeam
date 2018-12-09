@@ -64,7 +64,7 @@ public class CrabLaserEdit {
 	private EvidenceEditTable tableBefore;
 
 	public CrabLaserEdit(CrabLaserWindow parent, FormatLoader testData,
-			HashMap<String, LinkedList<String>> pictureAfterMap, HashMap<String, LinkedList<String>> pictureBeforeMap) {
+	HashMap<String, LinkedList<String>> pictureAfterMap, HashMap<String, LinkedList<String>> pictureBeforeMap) {
 		this.parent = parent;
 		this.testData = testData;
 		this.pictureAfterMap = pictureAfterMap;
@@ -92,7 +92,7 @@ public class CrabLaserEdit {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException ex) {
+		| IllegalAccessException | UnsupportedLookAndFeelException ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -124,14 +124,14 @@ public class CrabLaserEdit {
 		frame.setTitle("編集");
 		frame.addWindowListener(new WindowAdapter() {
 
-			@Override
-			public void windowClosing(WindowEvent e) {
-				parent.frame.setAlwaysOnTop(isParentOnTop);
-				parent.frame.setEnabled(true);
-				parent.loadPictureMap();
-				parent.reloadScreenShotThumb();
-			}
-		});
+					@Override
+					public void windowClosing(WindowEvent e) {
+						parent.frame.setAlwaysOnTop(isParentOnTop);
+						parent.frame.setEnabled(true);
+						parent.loadPictureMap();
+						parent.reloadScreenShotThumb();
+					}
+				});
 	}
 
 	private void initMainPanel() {
@@ -176,22 +176,22 @@ public class CrabLaserEdit {
 		modelAfter = new EvidenceEditModel();
 		tableAfter = new EvidenceEditTable(modelAfter) {
 
-			@Override
-			public void beforeRowRemove() {
-				delListAfter.add(modelAfter.getValueAt(tableAfter.getSelectedRow(), 5).toString());
-				delListAfter.add(modelAfter.getValueAt(tableAfter.getSelectedRow(), 6).toString());
-			}
-		};
+					@Override
+					public void beforeRowRemove() {
+						delListAfter.add(modelAfter.getValueAt(tableAfter.getSelectedRow(), 5).toString());
+						delListAfter.add(modelAfter.getValueAt(tableAfter.getSelectedRow(), 6).toString());
+					}
+				};
 		tableAfter.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				int row = tableAfter.getSelectedRow();
-				if (tableAfter.getSelectedColumn() == 3) {
-					return;
-				}
-				pictureCanvas.setPicture(modelAfter.getValueAt(row, 6).toString());
-				pictureCanvas.refresh();
-			}
-		});
+					public void mouseClicked(MouseEvent e) {
+						int row = tableAfter.getSelectedRow();
+						if (tableAfter.getSelectedColumn() == 3) {
+							return;
+						}
+						pictureCanvas.setPicture(modelAfter.getValueAt(row, 6).toString());
+						pictureCanvas.refresh();
+					}
+				});
 		scrollPane.setViewportView(tableAfter);
 	}
 
@@ -213,22 +213,22 @@ public class CrabLaserEdit {
 		modelBefore = new EvidenceEditModel();
 		tableBefore = new EvidenceEditTable(modelBefore) {
 
-			@Override
-			public void beforeRowRemove() {
-				delListBefore.add(modelBefore.getValueAt(tableBefore.getSelectedRow(), 5).toString());
-				delListBefore.add(modelBefore.getValueAt(tableBefore.getSelectedRow(), 6).toString());
-			}
-		};
+					@Override
+					public void beforeRowRemove() {
+						delListBefore.add(modelBefore.getValueAt(tableBefore.getSelectedRow(), 5).toString());
+						delListBefore.add(modelBefore.getValueAt(tableBefore.getSelectedRow(), 6).toString());
+					}
+				};
 		tableBefore.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				int row = tableBefore.getSelectedRow();
-				if (tableBefore.getSelectedColumn() == 3) {
-					return;
-				}
-				pictureCanvas.setPicture(modelBefore.getValueAt(row, 6).toString());
-				pictureCanvas.refresh();
-			}
-		});
+					public void mouseClicked(MouseEvent e) {
+						int row = tableBefore.getSelectedRow();
+						if (tableBefore.getSelectedColumn() == 3) {
+							return;
+						}
+						pictureCanvas.setPicture(modelBefore.getValueAt(row, 6).toString());
+						pictureCanvas.refresh();
+					}
+				});
 		scrollPane.setViewportView(tableBefore);
 	}
 
@@ -255,52 +255,52 @@ public class CrabLaserEdit {
 		JButton btnApply = new JButton("Apply");
 		btnApply.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				apply();
-			}
-		});
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						apply();
+					}
+				});
 		footerPanel.add(btnApply);
 
 		JButton btnOK = new JButton("OK");
 		btnOK.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				apply();
-				parent.frame.setAlwaysOnTop(isParentOnTop);
-				parent.frame.setEnabled(true);
-				frame.dispose();
-				parent.loadPictureMap();
-				parent.reloadTestSuite();
-			}
-		});
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						apply();
+						parent.frame.setAlwaysOnTop(isParentOnTop);
+						parent.frame.setEnabled(true);
+						frame.dispose();
+						parent.loadPictureMap();
+						parent.reloadTestSuite();
+					}
+				});
 		footerPanel.add(btnOK);
 
 		JButton btnCancel = new JButton("Cansel");
 		btnCancel.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				parent.frame.setAlwaysOnTop(isParentOnTop);
-				parent.frame.setEnabled(true);
-				frame.dispose();
-				parent.loadPictureMap();
-				parent.reloadTestSuite();
-			}
-		});
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						parent.frame.setAlwaysOnTop(isParentOnTop);
+						parent.frame.setEnabled(true);
+						frame.dispose();
+						parent.loadPictureMap();
+						parent.reloadTestSuite();
+					}
+				});
 		footerPanel.add(btnCancel);
 	}
 
 	private void initFinal() {
 		comboBox.addItemListener(new ItemListener() {
 
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				loadAfterEvidenceData();
-				loadBeforeEvidenceData();
-			}
-		});
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+						loadAfterEvidenceData();
+						loadBeforeEvidenceData();
+					}
+				});
 	}
 
 	private void loadAfterEvidenceData() {
@@ -321,20 +321,11 @@ public class CrabLaserEdit {
 			String order = "Ξ";
 			String bdd = ei.getBdd();
 			String evidenceName = ei.getEvidence_name();
-			String infoPath = ei.getImage_name().substring(0,
-					ei.getImage_name().length() - config.getSave_type().length())
-					+ "info";
+			String infoPath_buf = ei.getImage_name().substring(0,ei.getImage_name().length() - config.getSave_type().length())
+			String infoPath = "${infoPath_buf}info"
 			String imagePath = ei.getImage_name();
 
-			Object[] obj = [
-					order,
-					bdd,
-					evidenceName,
-					"",
-					ei,
-					config.getSave_path() + "\\" + "after" + "\\" + comboBox.getSelectedItem() + "\\" + infoPath,
-					config.getSave_path() + "\\" + "after" + "\\" + comboBox.getSelectedItem() + "\\" + imagePath
-			];
+			Object[] obj = [order, bdd, evidenceName, "", ei, config.getSave_path() + "\\" + "after" + "\\" + comboBox.getSelectedItem() + "\\" + infoPath, config.getSave_path() + "\\" + "after" + "\\" + comboBox.getSelectedItem() + "\\" + imagePath];
 			modelAfter.addRow(obj);
 		}
 	}
@@ -359,18 +350,10 @@ public class CrabLaserEdit {
 			String evidenceName = ei.getEvidence_name();
 			String infoPath = ei.getImage_name().substring(0,
 					ei.getImage_name().length() - config.getSave_type().length())
-					+ "info";
+			+ "info";
 			String imagePath = ei.getImage_name();
 
-			Object[] obj = [
-					order,
-					bdd,
-					evidenceName,
-					"",
-					ei,
-					config.getSave_path() + "\\" + "before" + "\\" + comboBox.getSelectedItem() + "\\" + infoPath,
-					config.getSave_path() + "\\" + "before" + "\\" + comboBox.getSelectedItem() + "\\" + imagePath
-			];
+			Object[] obj = [order, bdd, evidenceName, "", ei, config.getSave_path() + "\\" + "before" + "\\" + comboBox.getSelectedItem() + "\\" + infoPath, config.getSave_path() + "\\" + "before" + "\\" + comboBox.getSelectedItem() + "\\" + imagePath];
 			modelBefore.addRow(obj);
 		}
 	}

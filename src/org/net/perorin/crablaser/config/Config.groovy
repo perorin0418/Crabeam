@@ -4,8 +4,11 @@ import javax.xml.bind.annotation.XmlAccessType
 import javax.xml.bind.annotation.XmlAccessorType
 import javax.xml.bind.annotation.XmlElement
 
-import org.net.perorin.crablaser.config.ConfigCrabLaser
-
+/**
+ * コンフィグの根幹クラス
+ *
+ * @author perorin
+ */
 @XmlAccessorType( XmlAccessType.NONE )
 public class Config {
 
@@ -19,7 +22,7 @@ public class Config {
 	/**
 	 * crablaserのコンフィグのgetter
 	 *
-	 * @return
+	 * @return crablaserのコンフィグ
 	 */
 	public ConfigCrabLaser getCrablaser() {
 		return crablaser
@@ -28,7 +31,7 @@ public class Config {
 	/**
 	 * crablaserのコンフィグのsetter
 	 *
-	 * @return
+	 * @param crablaser コンフィグ
 	 */
 	public void setCrablaser(ConfigCrabLaser crablaser) {
 		this.crablaser = crablaser

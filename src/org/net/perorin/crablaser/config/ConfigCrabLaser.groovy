@@ -4,33 +4,65 @@ import javax.xml.bind.annotation.XmlAccessType
 import javax.xml.bind.annotation.XmlAccessorType
 import javax.xml.bind.annotation.XmlElement
 
+/**
+ * crablaserのコンフィグ
+ *
+ * @author perorin
+ */
 @XmlAccessorType( XmlAccessType.NONE )
 public class ConfigCrabLaser {
 
+	/**
+	 * 最前面
+	 */
 	@XmlElement(name="on_top")
 	private boolean on_top
 
+	/**
+	 * フルスクリーンでスクショを保存
+	 */
 	@XmlElement(name="save_full")
 	private boolean save_full
 
+	/**
+	 * スクショの保存先
+	 */
 	@XmlElement(name="save_path")
 	private String save_path
 
+	/**
+	 * スクショの画像形式
+	 */
 	@XmlElement(name="save_type")
 	private String save_type
 
+	/**
+	 * 画面を分割している位置
+	 */
 	@XmlElement(name="split_location")
 	private int split_location
 
+	/**
+	 * マウスカーソルのタイプ
+	 */
 	@XmlElement(name="cursor_type")
 	private String cursor_type
 
+	/**
+	 * スクショの幅の最大値
+	 */
 	@XmlElement(name="image_width_limit")
 	private int image_width_limit
 
+	/**
+	 * スクショの高さの最大値
+	 */
 	@XmlElement(name="image_height_limit")
 	private int image_height_limit
 
+	/**
+	 * スクショを圧縮するか否か
+	 */
 	@XmlElement(name="comp_image")
 	private boolean comp_image
 

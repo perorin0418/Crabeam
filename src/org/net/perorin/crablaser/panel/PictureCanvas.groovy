@@ -71,10 +71,10 @@ public class PictureCanvas extends JLayeredPane {
 
 			pictureLbl.setIcon(new ImageIcon(picture.getImageBuffer()))
 			pictureLbl.setBounds(
-					img.getWidth() / 2 - picture.getWidth() / 2 - img.getWidth() / 150,
-					img.getHeight() / 2 - picture.getHeight() / 2 - img.getHeight() / 150,
-					picture.getWidth(),
-					picture.getHeight())
+					(int)(img.getWidth() / 2 - picture.getWidth() / 2 - img.getWidth() / 150),
+					(int)(img.getHeight() / 2 - picture.getHeight() / 2 - img.getHeight() / 150),
+					(int)(picture.getWidth()),
+					(int)(picture.getHeight()))
 		}
 	}
 
@@ -84,7 +84,10 @@ public class PictureCanvas extends JLayeredPane {
 	}
 
 	public void refresh() {
-		setBounds(this.getBounds().x, this.getBounds().y, this.getBounds().width)
+		setBounds(
+				(int)(this.getBounds().x),
+				(int)(this.getBounds().y),
+				(int)(this.getBounds().width))
 	}
 
 	public int getPreferredHeight() {

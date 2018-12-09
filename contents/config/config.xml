@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <crablaser>
-        <comp_image>false</comp_image>
-        <cursor_type>NONE</cursor_type>
-        <image_height_limit>480</image_height_limit>
-        <image_width_limit>640</image_width_limit>
         <on_top>false</on_top>
         <save_full>false</save_full>
-        <save_path>D:\screenshot\726\pt</save_path>
+        <save_path>C:\Users\perorin\Desktop\Desktop\pleiades\workspace\Crabeam\test</save_path>
         <save_type>png</save_type>
         <split_location>310</split_location>
+        <cursor_type>NONE</cursor_type>
+        <image_width_limit>640</image_width_limit>
+        <image_height_limit>480</image_height_limit>
+        <comp_image>false</comp_image>
     </crablaser>
 </config>

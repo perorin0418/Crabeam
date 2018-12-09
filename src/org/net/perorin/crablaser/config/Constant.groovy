@@ -8,54 +8,43 @@ public class Constant {
 	private Constant() {
 	}
 
-	/** ニコニコフォントのパス */
-	public static String NICO_FONT_PATH = "./contents/font/nicomoji-plus_1.11.ttf"
-
-	/** たぬきフォントのパス */
+	/** たぬきフォント */
 	public static String TANUKI_FONT_PATH = "./contents/font/TanukiMagic.ttf"
 
-	/** crabeamのキー設定のパス */
-	public static String PRESET_PATH = "./contents/preset/preset.csv"
-
-	/** キャストのパス */
+	/** キャスト */
 	public static String CAST_IMG_PATH = "./contents/image/cast/"
 
-	/** キャストの枠のパス */
-	public static String CAST_FRAME_PATH = "./contents/image/cast/frame/frame.png"
-
-	/** キャストの枠（ワッペン化）のパス */
+	/** キャストの枠（ワッペン化） */
 	public static String CAST_WAPPEN_PATH = "./contents/image/cast/frame/wappen.png"
 
-	/** 起動スプラッシュのパス */
+	/** 起動スプラッシュ */
 	public static String BOOTING_IMG_PATH = "./contents/image/booting/"
 
-	/** アイコンのパス */
+	/** アイコン */
 	public static String ICON_PATH = "./contents/image/icon/icon64.png"
 
-	/** ブラスボタンのパス */
-	public static String BUTTON_PLUS = "./contents/image/button/plus.png"
-
-	/** プラスボタンを押したときのパス */
-	public static String BUTTON_PLUS_P = "./contents/image/button/plus_p.png"
-	public static String BUTTON_MINUS = "./contents/image/button/minus.png"
-	public static String BUTTON_MINUS_P = "./contents/image/button/minus_p.png"
-	public static String BUTTON_GIVEN = "./contents/image/button/given.png"
-	public static String BUTTON_GIVEN_P = "./contents/image/button/given_p.png"
-	public static String BUTTON_WHEN = "./contents/image/button/when.png"
-	public static String BUTTON_WHEN_P = "./contents/image/button/when_p.png"
-	public static String BUTTON_THEN = "./contents/image/button/then.png"
-	public static String BUTTON_THEN_P = "./contents/image/button/then_p.png"
+	/** ヘッダー */
 	public static String TESTSUITE_HEADER_PATH = "./contents/image/label/fusen_head.png"
+
+	/** given */
 	public static String TESTSUITE_GIVEN_PATH = "./contents/image/label/fusen_given.png"
+
+	/** when */
 	public static String TESTSUITE_WHEN_PATH = "./contents/image/label/fusen_when.png"
+
+	/** then */
 	public static String TESTSUITE_THEN_PATH = "./contents/image/label/fusen_then.png"
-	public static String TESTSUITE_GIVEN_PIN_PATH = "./contents/image/label/pin_given.png"
-	public static String TESTSUITE_WHEN_PIN_PATH = "./contents/image/label/pin_when.png"
-	public static String TESTSUITE_THEN_PIN_PATH = "./contents/image/label/pin_then.png"
-	public static String TESTSUITE_PIN_PICTURE_PATH = "./contents/image/label/pin_picture.png"
+
+	/** 背景 */
 	public static String TESTSUITE_BACKGROUND_PATH = "./contents/image/background/cork.png"
+
+	/** 赤丸 */
 	public static String TESTSUITE_SELECTION_PATH = "./contents/image/label/selection.png"
+
+	/** 画像枠 */
 	public static String PICTURE_FRAME_PATH = "./contents/image/label/picture_frame.png"
+
+
 	public static String CURSOR_DEFAULT = "./contents/image/cursor/default.png"
 	public static String CURSOR_HAND = "./contents/image/cursor/hand.png"
 	public static String CURSOR_BUSY = "./contents/image/cursor/busy.png"
